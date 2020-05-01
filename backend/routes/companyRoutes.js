@@ -6,6 +6,7 @@ const {
   read,
   listSearch,
   photo,
+  listBySearch
 } = require('../controllers/companyController');
 const { runValidation } = require('../validators');
 const { companyCreateValidator } = require('../validators/companyValidator');
@@ -17,5 +18,6 @@ router.get('/company/search', listSearch);
 // http://localhost:8000/api/company/search?search=kms
 
 router.get('/company/photo/:slug', photo);
+router.post("/company/by/search", listBySearch);
 
 module.exports = router;

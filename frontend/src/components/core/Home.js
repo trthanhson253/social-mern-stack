@@ -1,46 +1,41 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Card from './Card';
-import { getCompany,getNewestComment } from '../actions/apiCore';
+import {
+  getCompany,
+  getNewestComment,
+  getFilteredCompany,
+} from '../actions/apiCore';
 import './Home.css';
 import Search from './Search';
 import NewestCommentCard from './NewestCommentCard';
+import SigninModal from './SigninModal';
+import { STATES } from '../../config';
 
 const Home = () => {
   const [newestCompany, setNewestCompany] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [newestComment, setNewestComment] = useState([]);
   const [error, setError] = useState(false);
+  const [limit, setLimit] = useState(3);
+  const [skip, setSkip] = useState(0);
+  const [size, setSize] = useState(0);
+  const [open, setOpen] = useState(false);
 
-  // const [values, setValues] = useState({
-  //   name: '',
-  // });
-  // const { name } = values;
+  var states = STATES;
 
-  // const handleChange = (name) => (e) => {
-  //   setValues({
-  //     ...values,
-  //     [name]: e.target.value,
-  //   });
-  // };
-  // const handleSearch = (e) => {
-  //   e.preventDefault();
-  //   setValues({ ...values });
-  //   searchCompany({ name }).then((data) => {
-  //     if (data.error) {
-  //       setValues({ ...values });
-  //     } else {
-  //       setValues({
-  //         ...values,
-  //       });
-  //     }
-  //     console.log('Ket qua la:' + data);
-  //   });
-  // };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
   const loadNewestCompany = () => {
-    getCompany().then((data) => {
+    getFilteredCompany(skip, limit).then((data) => {
       if (data.error) {
         setError(data.error);
       } else {
-        setNewestCompany(data);
+        setNewestCompany(data.data);
+        setLoading(true);
+        setSize(data.size);
+        setSkip(0);
       }
     });
   };
@@ -53,7 +48,31 @@ const Home = () => {
       }
     });
   };
+  const loadMore = () => {
+    let toSkip = skip + limit;
+    // console.log(newFilters);
+    getFilteredCompany(toSkip, limit).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setNewestCompany([...newestCompany, ...data.data]);
+        setLoading(true);
+        setSize(data.size);
+        setSkip(toSkip);
+      }
+    });
+  };
 
+  const loadMoreButton = () => {
+    return (
+      size > 0 &&
+      size >= limit && (
+        <button onClick={loadMore} className="btn btn-warning mb-5">
+          Load more
+        </button>
+      )
+    );
+  };
   useEffect(() => {
     loadNewestCompany();
     loadNewestComment();
@@ -77,25 +96,19 @@ const Home = () => {
         </section>
         <div className="columns">
           <section className="companies column is-three-fifths">
-            <div className="tabs" style={{ 'font-size': 'medium' }}>
+            <div className="tabs" style={{ 'font-size': 'small' }}>
               <ul>
                 <li data-tab="top-comments" className="tab is-active">
-                  <a
-                    href="https://reviewcongty.com/?tab=latest"
-                    className="has-text-weight-bold"
-                  >
+                  <a href="#" className="has-text-weight-bold">
                     <span className="icon has-text-info">
                       {' '}
                       <i className="fas fa-comments" />{' '}
                     </span>{' '}
-                    Latest Update
+                    Newest
                   </a>
                 </li>
                 <li data-tab="top-companies" className="tab ">
-                  <a
-                    href="https://reviewcongty.com/?tab=best"
-                    className="has-text-weight-bold"
-                  >
+                  <a href="#" className="has-text-weight-bold">
                     <span className="icon has-text-success">
                       {' '}
                       <i className="fas fa-thumbs-up" />{' '}
@@ -104,10 +117,7 @@ const Home = () => {
                   </a>
                 </li>
                 <li data-tab="worst-companies" className="tab ">
-                  <a
-                    href="https://reviewcongty.com/?tab=worst"
-                    className="has-text-weight-bold"
-                  >
+                  <a href="#" className="has-text-weight-bold">
                     <span className="icon has-text-danger">
                       {' '}
                       <i className="fas fa-thumbs-down" />{' '}
@@ -115,114 +125,49 @@ const Home = () => {
                     Avoid These Companies
                   </a>
                 </li>
+                <div>
+                  <span className="icon has-text-info">
+                    <i class="fas fa-filter" />
+                  </span>
+                  Quick Filter :
+                  <select style={{ width: '100px' }}>
+                    <option value="states">By States</option>
+                    {states.map((p, i) => (
+                      <option value="p.abbreviation" key={i}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </ul>
             </div>
+
             <div className="tabs-section">
               {newestCompany.map((company, i) => (
                 <div key={i}>
-                  <Card company={company} />
-                  <hr />
+                  <Card company={company} loading={loading} />
                 </div>
               ))}
-
-              <div style={{ marginTop: '0.6rem' }}>
-                <nav
-                  className="pagination is-small custom-pagination"
-                  role="navigation"
-                  aria-label="pagination"
-                >
-                  <span className="pagination-summary">
-                    Trang <b>1</b> trên tổng số <b>353</b>
-                  </span>
-                  <ul className="pagination-list">
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=1"
-                        className="pagination-link is-current"
-                      >
-                        1
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=2"
-                        className="pagination-link "
-                      >
-                        2
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=3"
-                        className="pagination-link "
-                      >
-                        3
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=4"
-                        className="pagination-link "
-                      >
-                        4
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=5"
-                        className="pagination-link "
-                      >
-                        5
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=6"
-                        className="pagination-link "
-                      >
-                        6
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=7"
-                        className="pagination-link "
-                      >
-                        7
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=8"
-                        className="pagination-link "
-                      >
-                        8
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://reviewcongty.com/?tab=latest&page=9"
-                        className="pagination-link "
-                      >
-                        9
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
             </div>
+            {loadMoreButton()}
           </section>
-          <section className="summary-reviews column z-1">
-            <h1 className="is-size-4 has-text-weight-bold reviews__header" style={{color: 'blue'}}>
-            <i class="fas fa-comments"></i> Latest Review
+
+          <section className="summary-reviews column">
+            <h1
+              className="is-size-4 has-text-weight-bold reviews__header"
+              style={{ color: 'blue' }}
+            >
+              <i class="fas fa-comments"></i> Latest Review
             </h1>
             {newestComment.map((comment, i) => (
               <div key={i}>
-                <NewestCommentCard comment={comment} company={comment.company} />
+                <NewestCommentCard
+                  comment={comment}
+                  company={comment.company}
+                />
                 <hr />
               </div>
             ))}
-         
           </section>
         </div>
         <br />

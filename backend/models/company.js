@@ -1,34 +1,38 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const companySchema = new mongoose.Schema(
   {
     name: {
       type: String,
       trim: true,
-      require: true
+      require: true,
     },
     type: {
-      type: String
+      type: String,
     },
     city: {
       type: String,
-      trim: true
+      trim: true,
     },
     state: {
       type: String,
-      trim: true
+      trim: true,
     },
     slug: {
       type: String,
       unique: true,
-      index: true
+      index: true,
     },
     photo: {
       data: Buffer,
-      contentType: String
-    }
+      contentType: String,
+    },
+    avgRating: {
+      type: Number,
+      default: 0,
+    },
   },
-  { timestamps: true}
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("Company", companySchema);
+module.exports = mongoose.model('Company', companySchema);

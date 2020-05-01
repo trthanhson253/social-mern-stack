@@ -52,34 +52,17 @@ exports.create = (req, res) => {
   });
 };
 
-// exports.list = (req, res) => {
-//   Company.find({}).sort({ createdAt: -1 }).exec((err, data) => {
-//     if (err) {
-//       return res.status(400).json({
-//         error: errorHandler(err),
-//       });
-//     }
-//     res.json(data);
-//   });
-// };
-
 exports.list = (req, res) => {
-  Comment.find({}).exec((err, data) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Not Found Comment",
-      });
-    }
-    Company.find({ })
+  Company.find({})
+    .sort({ createdAt: '-1' })
     .exec((err, data) => {
       if (err) {
         return res.status(400).json({
-          error: "Not Found Company",
+          error: errorHandler(err),
         });
       }
       res.json(data);
     });
-  });
 };
 
 exports.read = (req, res) => {
@@ -87,7 +70,7 @@ exports.read = (req, res) => {
   Company.findOne({ slug }).exec((err, company) => {
     if (err) {
       return res.status(400).json({
-        error: "Not Found",
+        error: 'Not Found',
       });
     }
     // res.json(category);
@@ -153,5 +136,27 @@ exports.photo = (req, res) => {
       }
       res.set('Content-Type', company.photo.contentType);
       return res.send(company.photo.data);
+    });
+};
+
+exports.listBySearch = (req, res) => {
+  let limit = req.body.limit ? parseInt(req.body.limit) : 3;
+  let skip = parseInt(req.body.skip);
+
+  Company.find({})
+    .select('-photo')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Products not found',
+        });
+      }
+      res.json({
+        size: data.length,
+        data,
+      });
     });
 };

@@ -1,9 +1,10 @@
-import React, { Fragment,useState,useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { API } from '../../config';
 import { getCurrentCompany, getAverageRating } from '../actions/apiCompany';
+import Spinner from '../core/Spinner';
 
-const Card = ({ company }) => {
+const Card = ({ company, loading }) => {
   const [comments, setComment] = useState([]);
   const [avgRating, setAvgRating] = useState(false);
   const [error, setError] = useState(false);
@@ -31,7 +32,9 @@ const Card = ({ company }) => {
     loadAverageRating(slug);
   }, []);
 
-  return (
+  return !loading ? (
+    <Spinner />
+  ) : (
     <div data-href="/companies/vht" className="company-item">
       <div className="company-info">
         <figure className="company-info__logo image is-64x64">
@@ -45,81 +48,80 @@ const Card = ({ company }) => {
           <h2 className="is-size-5 has-text-weight-semibold company-info__name">
             <Link to={`/companies/${company.slug}`}>{company.name}</Link>{' '}
             <span className="company-info__rating">
-            {avgRating.result >= 1 ? (
-              <span>               
-              <span className="icon is-small has-text-warning">
-                <i
-                  className={
-                    avgRating.result >= 1 ? 'fas fa-star' : 'far fa-star'
-                  }
-                />
-              </span>
-              <span className="icon is-small has-text-warning">
-                <i
-                  className={
-                    avgRating.result >= 2
-                      ? 'fas fa-star'
-                      : (avgRating.result >= 1.5
-                        ? 'fas fa-star-half-alt'
-                        : 'far fa-star')
-                  }
-                />
-              </span>
-              <span className="icon is-small has-text-warning">
-                <i
-                  className={
-                    avgRating.result >= 3
-                      ? 'fas fa-star'
-                      : (avgRating.result >= 2.5
-                        ? 'fas fa-star-half-alt'
-                        : 'far fa-star')
-                  }
-                />
-              </span>
-              <span className="icon is-small has-text-warning">
-                <i
-                  className={
-                    avgRating.result >= 4
-                      ? 'fas fa-star'
-                      : (avgRating.result >= 3.5
-                      ? 'fas fa-star-half-alt'
-                      : 'far fa-star')
-                  }
-                />
-              </span>
-              <span className="icon is-small has-text-warning">
-                <i
-                  className={
-                    avgRating.result == 5
-                      ? 'fas fa-star'
-                      : (avgRating.result >= 4.5
-                        ? 'fas fa-star-half-alt'
-                        : 'far fa-star')
-                  }
-                />
-              </span>
-            </span>
-            ):(
-              <span>
-              <span className="icon is-small has-text-warning">
-              <i className ="far fa-star" />
-              </span>
-              <span className="icon is-small has-text-warning">
-              <i className ="far fa-star" />
-              </span>
-              <span className="icon is-small has-text-warning">
-              <i className ="far fa-star" />
-              </span>
-              <span className="icon is-small has-text-warning">
-              <i className ="far fa-star" />
-              </span>
-              <span className="icon is-small has-text-warning">
-              <i className ="far fa-star" />
-              </span>
-              </span>
-            )
-            }
-              
+              {avgRating.result >= 1 ? (
+                <span>
+                  <span className="icon is-small has-text-warning">
+                    <i
+                      className={
+                        avgRating.result >= 1 ? 'fas fa-star' : 'far fa-star'
+                      }
+                    />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i
+                      className={
+                        avgRating.result >= 2
+                          ? 'fas fa-star'
+                          : avgRating.result >= 1.5
+                          ? 'fas fa-star-half-alt'
+                          : 'far fa-star'
+                      }
+                    />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i
+                      className={
+                        avgRating.result >= 3
+                          ? 'fas fa-star'
+                          : avgRating.result >= 2.5
+                          ? 'fas fa-star-half-alt'
+                          : 'far fa-star'
+                      }
+                    />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i
+                      className={
+                        avgRating.result >= 4
+                          ? 'fas fa-star'
+                          : avgRating.result >= 3.5
+                          ? 'fas fa-star-half-alt'
+                          : 'far fa-star'
+                      }
+                    />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i
+                      className={
+                        avgRating.result == 5
+                          ? 'fas fa-star'
+                          : avgRating.result >= 4.5
+                          ? 'fas fa-star-half-alt'
+                          : 'far fa-star'
+                      }
+                    />
+                  </span>
+                </span>
+              ) : (
+                <span>
+                  <span className="icon is-small has-text-warning">
+                    <i className="far fa-star" />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i className="far fa-star" />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i className="far fa-star" />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i className="far fa-star" />
+                  </span>
+                  <span className="icon is-small has-text-warning">
+                    <i className="far fa-star" />
+                  </span>
+                </span>
+              )}
+
               <span className="company-info__rating-count">
                 ({comments.length})
               </span>
@@ -138,7 +140,6 @@ const Card = ({ company }) => {
                 {' '}
                 <i className="fas fa-users" />{' '}
               </span>{' '}
-              {company._id}
             </span>
           </div>
           <div className="company-info__location">
@@ -152,6 +153,7 @@ const Card = ({ company }) => {
           </div>
         </div>
       </div>
+      <hr />
     </div>
   );
 };

@@ -101,18 +101,28 @@ exports.averageRating = async (req, res) => {
   } else {
     result = 0;
   }
+
+  let a = await Company.findOneAndUpdate(
+    { slug },
+    { $set: { avgRating: result } },
+    { new: true }
+  );
+
   res.send({ result });
 };
 
 exports.list = (req, res) => {
-  Comment.find({}).sort({ createdAt: -1 }).select(
-    '_id name point content createdAt updatedAt'
-  ).populate('company', '_id name slug').limit(7).exec((err, data) => {
-    if (err) {
-      return res.status(400).json({
-        error: 'Comment Not Found',
-      });
-    }
-    res.json(data);
-  });
+  Comment.find({})
+    .select('_id name point content createdAt updatedAt')
+    .populate('company', '_id name slug')
+    .sort({ createdAt: -1 })
+    .exec((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Comment Not Found',
+        });
+      }
+
+      res.json(data);
+    });
 };
