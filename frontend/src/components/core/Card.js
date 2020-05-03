@@ -8,8 +8,9 @@ const Card = ({ company, loading }) => {
   const [comments, setComment] = useState([]);
   const [avgRating, setAvgRating] = useState(false);
   const [error, setError] = useState(false);
-  const loadCurrentCompany = (name) => {
-    getCurrentCompany(name).then((data) => {
+  
+  const loadCurrentCompany = (slug) => {
+    getCurrentCompany(slug).then((data) => {
       if (data.error) {
         setError(data.error);
       } else {

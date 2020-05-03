@@ -1,8 +1,8 @@
 import { API } from '../../config';
 import queryString from 'query-string';
 
-export const getCurrentCompany = (name) => {
-  return fetch(`${API}/companies/${name}`, {
+export const getCurrentCompany = (slug) => {
+  return fetch(`${API}/companies/${slug}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -93,4 +93,62 @@ export const listSearch = (params) => {
       return response.json();
     })
     .catch((err) => console.log(err));
+};
+
+export const createCompany = (company) => {
+  return fetch(`${API}/admin/company/create`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+    },
+    body: company,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const removeCompany = (slug) => {
+  return fetch(`${API}/admin/company/delete/${slug}`, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// export const singleCompany = (slug) => {
+//   return fetch(`${API}/admin/company/${slug}`, {
+//     method: 'GET',
+//   })
+//     .then((response) => {
+//       return response.json();
+//     })
+//     .catch((err) => console.log(err));
+// };
+
+
+
+export const editSingleCompany = (slug, company) => {
+    return fetch(`${API}/admin/company/${slug}`, {
+        method: 'PUT',
+        headers: {
+            Accept: 'application/json',
+           
+        },
+        body: company
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
 };

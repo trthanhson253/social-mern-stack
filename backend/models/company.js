@@ -8,7 +8,7 @@ const companySchema = new mongoose.Schema(
       require: true,
     },
     type: {
-      type: String,
+      type: Number,
     },
     city: {
       type: String,
@@ -30,6 +30,10 @@ const companySchema = new mongoose.Schema(
     avgRating: {
       type: Number,
       default: 0,
+    },
+    status: {
+      type: Number,
+      default: 1,
     },
   },
   { timestamps: true }

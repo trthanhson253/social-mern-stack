@@ -16,7 +16,7 @@ exports.create = (req, res) => {
       });
     }
 
-    const { name, type, city, state } = fields;
+    const { name, type, city, state, status } = fields;
 
     if (!name) {
       return res.status(400).json({
@@ -29,6 +29,7 @@ exports.create = (req, res) => {
     company.type = type;
     company.city = city;
     company.state = state;
+    company.status = status;
     company.slug = slugify(name).toLowerCase();
 
     if (files.photo) {
@@ -66,7 +67,8 @@ exports.list = (req, res) => {
 };
 
 exports.read = (req, res) => {
-  const slug = req.params.name.toLowerCase();
+  const slug = req.params.slug.toLowerCase();
+  console.log(slug);
   Company.findOne({ slug }).exec((err, company) => {
     if (err) {
       return res.status(400).json({
@@ -142,10 +144,14 @@ exports.photo = (req, res) => {
 exports.listBySearch = (req, res) => {
   let limit = req.body.limit ? parseInt(req.body.limit) : 3;
   let skip = parseInt(req.body.skip);
+  let sortBy = req.body.sortBy ? req.body.sortBy : 'createdAt';
+  let order = req.body.order ? req.body.order : 'desc';
+  let filterByState = req.body.filterByState;
+  let state = filterByState ? { state: filterByState } : {};
 
-  Company.find({})
+  Company.find(state)
     .select('-photo')
-    .sort({ createdAt: -1 })
+    .sort([[sortBy, order]])
     .skip(skip)
     .limit(limit)
     .exec((err, data) => {
@@ -158,5 +164,86 @@ exports.listBySearch = (req, res) => {
         size: data.length,
         data,
       });
+      
+    });
+};
+
+exports.remove = (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+  Company.findOneAndRemove({ slug }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: 'Company Not Found',
+      });
+    }
+    res.json({
+      message: 'Company deleted successfully',
+    });
+  });
+};
+
+exports.listSingleCompany = (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+  console.log('Slug' + slug);
+  Company.findOne({ slug })
+    .select('_id photo name city state status')
+    .exec((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Not Found',
+        });
+      }
+      res.json(data);
+    });
+};
+
+exports.editSingleCompany = (req, res) => {
+    const slug = req.params.slug.toLowerCase();
+
+    Company.findOne({ slug }).exec((err, oldCompany) => {
+        if (err) {
+            return res.status(400).json({
+                error:  'Not Found Company'
+            });
+        }
+
+        let form = new formidable.IncomingForm();
+        form.keepExtensions = true;
+
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                return res.status(400).json({
+                    error: 'Image could not upload'
+                });
+            }
+
+            let slugBeforeMerge = oldCompany.slug;
+            oldCompany = _.merge(oldCompany, fields);
+            oldCompany.slug = slugBeforeMerge;
+
+            
+
+           
+
+            if (files.photo) {
+                if (files.photo.size > 10000000) {
+                    return res.status(400).json({
+                        error: 'Image should be less then 1mb in size'
+                    });
+                }
+                oldCompany.photo.data = fs.readFileSync(files.photo.path);
+                oldCompany.photo.contentType = files.photo.type;
+            }
+
+            oldCompany.save((err, result) => {
+                if (err) {
+                    return res.status(400).json({
+                        error: 'cannot save'
+                    });
+                }
+                // result.photo = undefined;
+                res.json(result);
+            });
+        });
     });
 };

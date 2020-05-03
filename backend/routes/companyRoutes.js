@@ -6,18 +6,29 @@ const {
   read,
   listSearch,
   photo,
-  listBySearch
+  listBySearch,
+  remove,
+  listSingleCompany,
+  editSingleCompany
 } = require('../controllers/companyController');
 const { runValidation } = require('../validators');
 const { companyCreateValidator } = require('../validators/companyValidator');
 
-router.post('/company', create);
 router.get('/company', list);
-router.get('/companies/:name', read);
+router.get('/companies/:slug', read);
 router.get('/company/search', listSearch);
 // http://localhost:8000/api/company/search?search=kms
 
 router.get('/company/photo/:slug', photo);
-router.post("/company/by/search", listBySearch);
+router.post('/company/by/search', listBySearch);
+
+// ADMIN
+router.post('/admin/company/create', create);
+router.delete('/admin/company/delete/:slug', remove);
+router.get('/admin/company/:slug', listSingleCompany);
+router.put(
+    "/admin/company/:slug",
+    editSingleCompany
+);
 
 module.exports = router;

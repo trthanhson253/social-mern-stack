@@ -10,34 +10,34 @@ export const getCompany = () => {
     .catch((err) => console.log(err));
 };
 
-export const getNewestComment = () => {
-  return fetch(`${API}/comment`, {
-    method: 'GET',
+
+
+export const getFilteredCompany = (
+  skip,
+  limit,
+  sortBy,
+  order,
+  filterByState
+) => {
+  const data = {
+    limit,
+    skip,
+    sortBy,
+    order,
+    filterByState,
+  };
+  return fetch(`${API}/company/by/search`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
   })
     .then((response) => {
       return response.json();
     })
-    .catch((err) => console.log(err));
-};
-
-export const getFilteredCompany = (skip, limit) => {
-  const data = {
-      limit,
-      skip
-      
-  };
-  return fetch(`${API}/company/by/search`, {
-      method: "POST",
-      headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-  })
-      .then(response => {
-          return response.json();
-      })
-      .catch(err => {
-          console.log(err);
-      });
+    .catch((err) => {
+      console.log(err);
+    });
 };

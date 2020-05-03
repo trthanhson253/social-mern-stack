@@ -6,7 +6,8 @@ const {
   reply,
   violate,
   averageRating,
-  list
+  list,
+  removeComment
 } = require('../controllers/commentController');
 const { runValidation } = require('../validators');
 const { commentCreateValidator } = require('../validators/commentValidator');
@@ -18,5 +19,8 @@ router.post('/reply/:id', reply);
 router.post('/violate/:id', violate);
 
 router.get('/averageRating/:slug', averageRating);
+
+// ADMIN
+router.delete('/admin/comment/delete/:idComment', removeComment);
 
 module.exports = router;

@@ -2,9 +2,14 @@ import React, { useState, useEffect, Fragment } from 'react';
 import Card from './Card';
 import {
   getCompany,
-  getNewestComment,
+  
   getFilteredCompany,
 } from '../actions/apiCore';
+import {
+ 
+  getNewestComment,
+  
+} from '../actions/apiComment';
 import './Home.css';
 import Search from './Search';
 import NewestCommentCard from './NewestCommentCard';
@@ -20,15 +25,53 @@ const Home = () => {
   const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(0);
   const [open, setOpen] = useState(false);
+  const [filterByState, setFilterByState] = useState('');
+  let sortBy,
+    order = '';
 
   var states = STATES;
-
+  // let avgRating = 'avgRating';
+  // let asc = 'asc';
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const loadNewestCompany = () => {
     getFilteredCompany(skip, limit).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        console.log("Dữ liêu là:"+data.data);
+        setNewestCompany(data.data);
+        setLoading(true);
+        setSize(data.size);
+        setSkip(0);
+      }
+    });
+  };
+
+  const loadTopCompany = () => {
+    getFilteredCompany(skip, limit, (sortBy = 'avgRating'), order).then(
+      (data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setNewestCompany(data.data);
+          setLoading(true);
+          setSize(data.size);
+          setSkip(0);
+        }
+      }
+    );
+  };
+
+  const loadWorstCompany = () => {
+    getFilteredCompany(
+      skip,
+      limit,
+      (sortBy = 'avgRating'),
+      (order = 'asc')
+    ).then((data) => {
       if (data.error) {
         setError(data.error);
       } else {
@@ -39,6 +82,7 @@ const Home = () => {
       }
     });
   };
+
   const loadNewestComment = () => {
     getNewestComment().then((data) => {
       if (data.error) {
@@ -73,10 +117,32 @@ const Home = () => {
       )
     );
   };
+
+  const handleStateChange = (e) => {
+    setFilterByState(e);
+  };
+  console.log(filterByState);
+  const loadFilterByState = () => {
+    getFilteredCompany(skip, limit, sortBy, order, filterByState).then(
+      (data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setNewestCompany(data.data);
+          setLoading(true);
+          setSize(data.size);
+          setSkip(0);
+        }
+      }
+    );
+  };
   useEffect(() => {
     loadNewestCompany();
     loadNewestComment();
   }, []);
+  useEffect(() => {
+    loadFilterByState();
+  }, [filterByState]);
 
   return (
     <div>
@@ -88,8 +154,9 @@ const Home = () => {
         </section>
         <section className="hero">
           <div className="hero-body z-1">
-            <h1 className="title has-text-white">[Listen developerS]</h1>
+            <h1 className="title has-text-white">Feel free to say what you think. No Registration Required.</h1>
             <div>
+            
               <Search />
             </div>
           </div>
@@ -98,7 +165,11 @@ const Home = () => {
           <section className="companies column is-three-fifths">
             <div className="tabs" style={{ 'font-size': 'small' }}>
               <ul>
-                <li data-tab="top-comments" className="tab is-active">
+                <li
+                  data-tab="top-comments"
+                  className="tab is-active"
+                  onClick={loadNewestCompany}
+                >
                   <a href="#" className="has-text-weight-bold">
                     <span className="icon has-text-info">
                       {' '}
@@ -107,7 +178,11 @@ const Home = () => {
                     Newest
                   </a>
                 </li>
-                <li data-tab="top-companies" className="tab ">
+                <li
+                  data-tab="top-companies"
+                  className="tab"
+                  onClick={loadTopCompany}
+                >
                   <a href="#" className="has-text-weight-bold">
                     <span className="icon has-text-success">
                       {' '}
@@ -116,7 +191,11 @@ const Home = () => {
                     Top Companies
                   </a>
                 </li>
-                <li data-tab="worst-companies" className="tab ">
+                <li
+                  data-tab="worst-companies"
+                  className="tab "
+                  onClick={loadWorstCompany}
+                >
                   <a href="#" className="has-text-weight-bold">
                     <span className="icon has-text-danger">
                       {' '}
@@ -130,10 +209,13 @@ const Home = () => {
                     <i class="fas fa-filter" />
                   </span>
                   Quick Filter :
-                  <select style={{ width: '100px' }}>
-                    <option value="states">By States</option>
+                  <select
+                    style={{ width: '100px' }}
+                    onChange={(e) => handleStateChange(e.target.value)}
+                  >
+                    <option value="all">By States</option>
                     {states.map((p, i) => (
-                      <option value="p.abbreviation" key={i}>
+                      <option value={p.abbreviation} key={i}>
                         {p.name}
                       </option>
                     ))}
@@ -145,7 +227,9 @@ const Home = () => {
             <div className="tabs-section">
               {newestCompany.map((company, i) => (
                 <div key={i}>
+                {company.status == 1 &&
                   <Card company={company} loading={loading} />
+                }
                 </div>
               ))}
             </div>

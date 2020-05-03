@@ -4,7 +4,8 @@ import Home from './components/core/Home';
 import Header from './components/core/Header';
 import Footer from './components/core/Footer';
 import Company from './components/company/Company';
-import WriteReviewModal from './components/company/WriteReviewModal';
+import CompanyList from './components/admin/CompanyList';
+import CommentList from './components/admin/CommentList';
 
 const Routes = () => {
   return (
@@ -13,6 +14,8 @@ const Routes = () => {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/companies/:name" exact component={Company} />
+        <Route path="/admin/company" exact component={CompanyList} />
+        <Route path="/admin/comment" exact component={CommentList} />
       </Switch>
       <Footer />
     </BrowserRouter>

@@ -113,7 +113,7 @@ exports.averageRating = async (req, res) => {
 
 exports.list = (req, res) => {
   Comment.find({})
-    .select('_id name point content createdAt updatedAt')
+    .select('_id name point content violate createdAt updatedAt')
     .populate('company', '_id name slug')
     .sort({ createdAt: -1 })
     .exec((err, data) => {
@@ -124,5 +124,22 @@ exports.list = (req, res) => {
       }
 
       res.json(data);
+    });
+};
+
+
+
+exports.removeComment = (req, res) => {
+  const idComment = req.params.id;
+  console.log("Id la:"+idComment);
+    Comment.findOneAndRemove({ idComment }).exec((err, data) => {
+        if (err) {
+            return res.status(400).json({
+                error: 'Tag Not Found'
+            });
+        }
+        res.json({
+            message: 'Tag deleted successfully'
+        });
     });
 };
