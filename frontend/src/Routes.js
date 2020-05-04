@@ -6,6 +6,7 @@ import Footer from './components/core/Footer';
 import Company from './components/company/Company';
 import CompanyList from './components/admin/CompanyList';
 import CommentList from './components/admin/CommentList';
+import RequestList from './components/admin/RequestList';
 
 const Routes = () => {
   return (
@@ -16,6 +17,7 @@ const Routes = () => {
         <Route path="/companies/:name" exact component={Company} />
         <Route path="/admin/company" exact component={CompanyList} />
         <Route path="/admin/comment" exact component={CommentList} />
+        <Route path="/admin/request" exact component={RequestList} />
       </Switch>
       <Footer />
     </BrowserRouter>

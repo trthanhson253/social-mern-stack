@@ -9,7 +9,8 @@ const {
   listBySearch,
   remove,
   listSingleCompany,
-  editSingleCompany
+  editSingleCompany,
+  listStatus
 } = require('../controllers/companyController');
 const { runValidation } = require('../validators');
 const { companyCreateValidator } = require('../validators/companyValidator');
@@ -30,5 +31,6 @@ router.put(
     "/admin/company/:slug",
     editSingleCompany
 );
+router.get('/admin/company/status/:status', listStatus);
 
 module.exports = router;

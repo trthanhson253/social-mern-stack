@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import './admin.css';
 import { getFilteredCompany } from '../actions/apiCore';
-import { removeCompany } from '../actions/apiCompany';
+import { removeCompany, getHandleStatusAPI } from '../actions/apiCompany';
 import { API } from '../../config';
 import AddCompanyModal from './AddCompanyModal';
 import { Link } from 'react-router-dom';
@@ -18,6 +18,21 @@ const CompanyList = () => {
   const [slug, setSlug] = useState({});
   const [openEdit, setOpenEdit] = useState(false);
   const [companyToEdit, setCompanyToEdit] = useState([]);
+  const [status, setStatus] = useState({});
+
+  const handleChangeStatus = (e) => {
+    setStatus(e.target.value);
+    getHandleStatus();
+  };
+  console.log('status là:' + status);
+  const getHandleStatus = () => {
+    getHandleStatusAPI(status).then((data) => {
+      setCompany(data);
+      setLoading(true);
+      setSize(data.size);
+      setSkip(0);
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -29,7 +44,7 @@ const CompanyList = () => {
     setOpenEdit(true);
     setCompanyToEdit(p);
   };
- 
+
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
@@ -82,6 +97,11 @@ const CompanyList = () => {
       }
     });
   };
+  const orderNumber = () => {
+    for (let i = 0; i < company.length; i++) {
+      return i + 1;
+    }
+  };
   useEffect(() => {
     loadCompany();
   }, []);
@@ -92,14 +112,20 @@ const CompanyList = () => {
         handleClose={handleClose}
         loadCompany={loadCompany}
       />
-      <EditCompanyModal openEdit={openEdit} companyToEdit={companyToEdit} loadCompany={loadCompany} handleCloseEdit={handleCloseEdit} />
+      <EditCompanyModal
+        openEdit={openEdit}
+        companyToEdit={companyToEdit}
+        loadCompany={loadCompany}
+        handleCloseEdit={handleCloseEdit}
+      />
       <div className="table-wrapper">
-        <div className="table-title">
+        <div className="table-title" style={{ background: '#FFC107' }}>
           <div className="row">
             <div className="col-sm-4">
-              <h2>
-                <i class="fas fa-building"></i> List of <b>Companies</b>
-              </h2>
+              <h3>
+                <i class="fas fa-building"></i> &nbsp;List of <b>Companies</b>(
+                {company.length})
+              </h3>
             </div>
             <div className="col-sm-8">
               <a href="#" className="btn btn-info" onClick={handleClickOpen}>
@@ -143,10 +169,15 @@ const CompanyList = () => {
               </div>
               <div className="filter-group">
                 <label>Status</label>
-                <select className="form-control">
-                  <option>Any</option>
-                  <option>Active</option>
-                  <option>Inactive</option>
+                <select
+                  className="form-control"
+                  name="status"
+                  onChange={handleChangeStatus}
+                  value={status}
+                >
+                  <option value="2">Any</option>
+                  <option value="1">Active</option>
+                  <option value="0">Inactive</option>
                 </select>
               </div>
               <span className="filter-icon">
@@ -182,7 +213,7 @@ const CompanyList = () => {
           <tbody>
             {company.map((p, i) => (
               <tr>
-                <td>1</td>
+                <td>{orderNumber()}</td>
                 <td>
                   <img
                     src={`${API}/company/photo/${p.slug}`}
@@ -192,21 +223,24 @@ const CompanyList = () => {
                   />{' '}
                   <b>{p.name}</b>
                 </td>
-                {p.type == 0 ? <td>Product</td> : (p.type>1 ? <td>Consultancy</td> : <td>Service</td>)
-                
-              
-                }               
+                {p.type == 0 ? (
+                  <td>Product</td>
+                ) : p.type > 1 ? (
+                  <td>Consultancy</td>
+                ) : (
+                  <td>Service</td>
+                )}
                 <td>{p.city}</td>
                 <td>{p.state}</td>
 
-                <td>
+                <td style={{ fontSize: '18px' }}>
                   {p.status == 1 ? (
                     <div>
-                      <span className="status text-success">• </span>Active
+                      <span class="badge badge-success">Active</span>
                     </div>
                   ) : (
-                    <div className="text-danger">
-                      <span className="status">• </span> Inactive
+                    <div>
+                      <span class="badge badge-danger">Inactive</span>
                     </div>
                   )}
                 </td>

@@ -1,62 +1,61 @@
 html {
-    font-size: 15px;
-    
-  }
-  .hero-body {
-    padding: 1.5rem;
-  }
-  .hero{
-    margin-top: -200px;
-  }
-  
-  .title {
-    font-size: 1.5rem;
-  }
-  .tabs {
-    font-size: 0.75rem;
-    max-width: 100%;
-    overflow-x: hidden;
-    margin-bottom: 0.6rem;
-  }
-  .tabs a {
-    padding: 0.2rem 0.7rem 0.2rem 0;
-  }
-  .tabs .icon:last-child {
-    margin-left: 0;
-  }
-  .breadcrumb {
-    padding-left: 1rem;
-  }
-  .columns {
-    margin-left: auto;
-    margin-right: auto;
-    width: 98%;
-    margin-top: 100px;
-  }
-  .modal-card {
-    width: 85vw;
-    margin: 0 auto;
-  }
-  .modal-card .modal-card-head {
-    padding: 1rem;
-  }
-  .modal-card .modal-card-head .modal-card-title {
-    font-size: 1.2rem;
-    width: 100%;
-  }
-  .modal-card .modal-card-body {
-    padding: 1rem;
-  }
-  .modal-content {
-    width: 90%;
-  }
-  .section {
-    padding: 1.5rem 1rem;
-  }
+  font-size: 15px;
+}
+.hero-body {
+  padding: 1.5rem;
+}
+.hero {
+  margin-top: -200px;
+}
+
+.title {
+  font-size: 1.5rem;
+}
+.tabs {
+  font-size: 0.75rem;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin-bottom: 0.6rem;
+}
+.tabs a {
+  padding: 0.2rem 0.7rem 0.2rem 0;
+}
+.tabs .icon:last-child {
+  margin-left: 0;
+}
+.breadcrumb {
+  padding-left: 1rem;
+}
+.columns {
+  margin-left: auto;
+  margin-right: auto;
+  width: 98%;
+  margin-top: 100px;
+}
+.modal-card {
+  width: 85vw;
+  margin: 0 auto;
+}
+.modal-card .modal-card-head {
+  padding: 1rem;
+}
+.modal-card .modal-card-head .modal-card-title {
+  font-size: 1.2rem;
+  width: 100%;
+}
+.modal-card .modal-card-body {
+  padding: 1rem;
+}
+.modal-content {
+  width: 90%;
+}
+.section {
+  padding: 1.5rem 1rem;
+}
 
 body {
   font-family: 'Quicksand', sans-serif;
-  /* background: #f5f7fa; */
+  /* background: white; */
   /* background: linear-gradient(to top, #ece9e6, #ffffff); */
   min-height: 100vh;
 }
@@ -274,8 +273,8 @@ a.white-link:hover {
   }
 }
 .summary-reviews {
-  padding-left: 1.8rem;
-  padding-top: 0.3rem;
+  padding-left: 1.5rem;
+  padding-top: 0.1rem;
 }
 @media screen and (max-width: 768px) {
   .summary-reviews {
@@ -292,7 +291,12 @@ a.white-link:hover {
   }
 }
 .summary-reviews .review {
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 6px;
+  padding: 14px;
+  padding-bottom: 2px;
+  font-size: small;
 }
 .autocomplete-suggestion {
   display: flex;
@@ -422,3 +426,9 @@ a.white-link:hover {
   box-shadow: 0 2px 2px rgba(10, 10, 10, 0.2);
   z-index: 10;
   background: white;
+}
+
+.column is-three-fifths {
+  border-radius: 3px;
+  padding: 2px;
+}

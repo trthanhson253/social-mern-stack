@@ -9,7 +9,7 @@ require('dotenv').config();
 const companyRoutes = require('./routes/companyRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const authRoutes = require('./routes/authRoutes');
-
+const requestRoutes = require('./routes/requestRoutes');
 // app
 const app = express();
 
@@ -38,6 +38,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api', companyRoutes);
 app.use('/api', commentRoutes);
 app.use('/api', authRoutes);
+app.use('/api', requestRoutes);
 
 // port
 const port = process.env.PORT || 8000;

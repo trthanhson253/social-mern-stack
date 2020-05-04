@@ -1,10 +1,18 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SigninModal from './SigninModal';
+import SendRequest from './SendRequest';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [openSendRequest, setOpenSendRequest] = useState(false);
 
+  const handleClickOpenSendRequest = () => {
+    setOpenSendRequest(true);
+  };
+  const handleCloseSendRequest = () => {
+    setOpenSendRequest(false);
+  };
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -16,8 +24,16 @@ const Header = () => {
     <Fragment>
       <nav className="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
         <SigninModal open={open} handleClose={handleClose} />
+        <SendRequest
+          openSendRequest={openSendRequest}
+          handleCloseSendRequest={handleCloseSendRequest}
+        />
         <Link to="/" className="navbar-brand">
-          <img alt="Logo" src={require('./logo.png')} style={{borderRadius:'5px'}} />
+          <img
+            alt="Logo"
+            src={require('./logo.png')}
+            style={{ borderRadius: '5px' }}
+          />
         </Link>
         <button
           className="navbar-toggler"
@@ -53,12 +69,12 @@ const Header = () => {
                 </span>
               </Link>
             </li>
-              <li className="nav-item active">
-              <a className="nav-link" href="#">
-                <span className="badge badge-info">
-                  <i className="fa fa-home" /> Request Box
+            <li className="nav-item active">
+              <Link to="/admin/request" className="nav-link">
+                <span className="badge badge-success">
+                  <i class="fas fa-box-open"></i> Request Box
                 </span>
-              </a>
+              </Link>
             </li>
           </ul>
           <ul className="navbar-nav ">
@@ -70,14 +86,13 @@ const Header = () => {
                 Notifications
               </a>
             </li>
-            
           </ul>
- <button
+          <button
             className="btn btn-outline-warning my-2 my-sm-0"
             type="submit"
-            
+            onClick={handleClickOpenSendRequest}
           >
-            <i className="fas fa-user"></i> Send Request
+            <i class="fas fa-star"></i> Send Request
           </button>
           &nbsp;&nbsp;&nbsp;
           <button

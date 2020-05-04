@@ -1,15 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Card from './Card';
-import {
-  getCompany,
-  
-  getFilteredCompany,
-} from '../actions/apiCore';
-import {
- 
-  getNewestComment,
-  
-} from '../actions/apiComment';
+import { getCompany, getFilteredCompany } from '../actions/apiCore';
+import { getNewestComment } from '../actions/apiComment';
 import './Home.css';
 import Search from './Search';
 import NewestCommentCard from './NewestCommentCard';
@@ -41,7 +33,7 @@ const Home = () => {
       if (data.error) {
         setError(data.error);
       } else {
-        console.log("Dữ liêu là:"+data.data);
+        console.log('Dữ liêu là:' + data.data);
         setNewestCompany(data.data);
         setLoading(true);
         setSize(data.size);
@@ -111,9 +103,12 @@ const Home = () => {
     return (
       size > 0 &&
       size >= limit && (
-        <button onClick={loadMore} className="btn btn-warning mb-5">
-          Load more
-        </button>
+        <center>
+          {' '}
+          <button onClick={loadMore} className="btn btn-warning mb-5">
+            Load more
+          </button>
+        </center>
       )
     );
   };
@@ -154,9 +149,10 @@ const Home = () => {
         </section>
         <section className="hero">
           <div className="hero-body z-1">
-            <h1 className="title has-text-white">Feel free to say what you think. No Registration Required.</h1>
+            <h1 className="title has-text-white">
+              Feel free to say what you think. No Registration Required.
+            </h1>
             <div>
-            
               <Search />
             </div>
           </div>
@@ -227,9 +223,9 @@ const Home = () => {
             <div className="tabs-section">
               {newestCompany.map((company, i) => (
                 <div key={i}>
-                {company.status == 1 &&
-                  <Card company={company} loading={loading} />
-                }
+                  {company.status == 1 && (
+                    <Card company={company} loading={loading} />
+                  )}
                 </div>
               ))}
             </div>
@@ -239,9 +235,14 @@ const Home = () => {
           <section className="summary-reviews column">
             <h1
               className="is-size-4 has-text-weight-bold reviews__header"
-              style={{ color: 'blue' }}
+              style={{
+                color: 'white',
+                background: '#007BFF',
+                borderRadius: '2px',
+                padding: '6px',
+              }}
             >
-              <i class="fas fa-comments"></i> Latest Review
+              <i class="fas fa-comments"></i> &#123; Latest Review &#125;
             </h1>
             {newestComment.map((comment, i) => (
               <div key={i}>
@@ -249,7 +250,6 @@ const Home = () => {
                   comment={comment}
                   company={comment.company}
                 />
-                <hr />
               </div>
             ))}
           </section>

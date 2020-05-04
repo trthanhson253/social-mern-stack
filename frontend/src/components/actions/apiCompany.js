@@ -152,3 +152,19 @@ export const editSingleCompany = (slug, company) => {
         })
         .catch(err => console.log(err));
 };
+
+
+export const getHandleStatusAPI = (status) => {
+    return fetch(`${API}/admin/company/status/${status}`, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+           
+        },
+        
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
+};

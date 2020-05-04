@@ -170,7 +170,7 @@ exports.listBySearch = (req, res) => {
 
 exports.remove = (req, res) => {
   const slug = req.params.slug.toLowerCase();
-  Company.findOneAndRemove({ slug }).exec((err, data) => {
+  Company.findOneAndUpdate({ slug },{"status":0}).exec((err, data) => {
     if (err) {
       return res.status(400).json({
         error: 'Company Not Found',
@@ -245,5 +245,29 @@ exports.editSingleCompany = (req, res) => {
                 res.json(result);
             });
         });
+    });
+};
+
+
+exports.listStatus = (req, res) => {
+  let statusChange='';
+  const status1 = req.params.status;
+  if(status1 == 0){
+    statusChange={status:0};
+  }else if(status1 == 1){
+    statusChange={status:1}
+  }else{
+    statusChange={}
+  }
+
+  Company.find(statusChange)
+    .sort({ createdAt: '-1' })
+    .exec((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Not Found Company',
+        });
+      }
+      res.json(data);
     });
 };

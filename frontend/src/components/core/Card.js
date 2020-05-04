@@ -8,7 +8,7 @@ const Card = ({ company, loading }) => {
   const [comments, setComment] = useState([]);
   const [avgRating, setAvgRating] = useState(false);
   const [error, setError] = useState(false);
-  
+
   const loadCurrentCompany = (slug) => {
     getCurrentCompany(slug).then((data) => {
       if (data.error) {
@@ -122,10 +122,6 @@ const Card = ({ company, loading }) => {
                   </span>
                 </span>
               )}
-
-              <span className="company-info__rating-count">
-                ({comments.length})
-              </span>
             </span>
           </h2>
           <div className="company-info__other">
@@ -154,7 +150,21 @@ const Card = ({ company, loading }) => {
           </div>
         </div>
       </div>
-      <hr />
+      <div
+        className="level-right"
+        style={{
+          paddingRight: '10px',
+          fontSize: 'small',
+          color: 'gray',
+          fontWeight: 'bold',
+        }}
+      >
+        <b></b>
+        <i class="fas fa-comment-alt"></i>&nbsp; {comments.length}{' '}
+        Comments&nbsp; |&nbsp;
+        <i class="fas fa-share"></i>&nbsp; Share
+      </div>
+      <br />
     </div>
   );
 };

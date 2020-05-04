@@ -3,25 +3,16 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="main-footer">
+    <footer className="main-footer" style={{ fontSize: 'small' }}>
       <div className="container level">
         <div className="level-left">
+          <p className="level-item">Copyright © 2020 Listen Developers</p>
+        </div>
+        <div className="level-right">
           <p className="level-item">
-            <a
-              className="white-link"
-              target="_blank"
-              href="https://reviewcongty.com/faq"
-            >
-              Q & A
-            </a>{' '}
-            &nbsp;&nbsp;|&nbsp;&nbsp;
-            <a
-              className="white-link"
-              target="_blank"
-              href="https://reviewcongty.com/tnc"
-            >
-              Request Delete Review
-            </a>
+            Q & A | Terms | Privacy Policy | &nbsp;
+            <img alt="usa" src={require('./world.png')} />
+            &nbsp; United States
           </p>
         </div>
       </div>

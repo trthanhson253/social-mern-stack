@@ -98,7 +98,7 @@ const CommentCard = ({ comment, handleReload }) => {
               &nbsp;
             </span>
           )}
-          {comment.violate.length > 0 && (
+          {comment.violate.length != 0 && (
             <span>
               <i class="fas fa-thumbtack"></i>&nbsp; Đã bị đánh dấu vi phạm bởi{' '}
               {comment.violate.length} người
