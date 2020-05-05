@@ -14,12 +14,16 @@ const requestSchema = new mongoose.Schema(
       required: true,
     },
     reason: {
-      type: Number,
+      type: String,
     },
     content: {
       type: String,
       max: 1000,
       required: true,
+    },
+    status: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

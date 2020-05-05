@@ -1,10 +1,15 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { getCurrentCompany, getAverageRating } from '../actions/apiCompany';
+import {
+  getCurrentCompany,
+  getAverageRating,
+  getCurrentView,
+} from '../actions/apiCompany';
 import WriteReviewModal from './WriteReviewModal';
 import CommentCard from './CommentCard';
 import { API } from '../../config';
-
+import './company.css';
+import moment from 'moment';
 const Company = (props) => {
   const [company, setCompany] = useState({});
   const [comments, setComment] = useState([]);
@@ -13,6 +18,7 @@ const Company = (props) => {
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false);
   const [avgRating, setAvgRating] = useState(false);
+  const [view, setView] = useState();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -28,8 +34,8 @@ const Company = (props) => {
   const handleReload = () => {
     setReload(!reload);
   };
-  const loadCurrentCompany = (name) => {
-    getCurrentCompany(name).then((data) => {
+  const loadCurrentCompany = (slug) => {
+    getCurrentCompany(slug).then((data) => {
       if (data.error) {
         setError(data.error);
       } else {
@@ -38,6 +44,7 @@ const Company = (props) => {
       }
     });
   };
+
   const loadAverageRating = (slug) => {
     getAverageRating(slug).then((data) => {
       if (data.error) {
@@ -47,21 +54,34 @@ const Company = (props) => {
       }
     });
   };
+
+  const loadView = (slug) => {
+    getCurrentView(slug).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        console.log('View là:' + data);
+        setView(data);
+      }
+    });
+  };
   console.log('rating là:' + avgRating.result);
+
   const toggleModalState = () => {
     setModalState(!modalState);
   };
 
   useEffect(() => {
-    const name = props.match.params.name;
-    loadCurrentCompany(name);
-    loadAverageRating(name);
+    const slug1 = props.match.params.slug;
+    loadCurrentCompany(slug1);
+    loadAverageRating(slug1);
+    loadView(slug1);
   }, [props]);
 
   useEffect(() => {
-    const name = props.match.params.name;
-    loadCurrentCompany(name);
-    loadAverageRating(name);
+    const slug1 = props.match.params.slug;
+    loadCurrentCompany(slug1);
+    loadAverageRating(slug1);
   }, [reload]);
 
   return (
@@ -87,12 +107,14 @@ const Company = (props) => {
                   {' '}
                   <i className="fas fa-home" aria-hidden="true" />{' '}
                 </span>
-                <span>Trang chủ</span>
+                <span>Home</span>
               </Link>
             </li>
             <li className="is-active">
-              <a href="https://reviewcongty.com/companies/shb-finance#">
-                <span>Review Công ty {company.name} </span>
+              <a href="#">
+                <span>
+                  Review <b>{company.name}</b>{' '}
+                </span>
               </a>
             </li>
           </ul>
@@ -187,8 +209,8 @@ const Company = (props) => {
                     </span>
                   )}
 
-                  <span className="company-info__rating-count">
-                    ({comments.length})
+                  <span className="company-create">
+                    - <b>Posted {moment(company.createdAt).fromNow()}</b>
                   </span>
                 </span>
               </h2>
@@ -221,7 +243,7 @@ const Company = (props) => {
           </div>
           <div className="company-action">
             <button
-              className="button is-success is-medium is-rounded button-review"
+              className="button is-danger is-medium  button-review"
               onClick={handleClickOpen}
             >
               <span className="icon">
@@ -230,15 +252,25 @@ const Company = (props) => {
               </span>{' '}
               <span>Write review</span>
             </button>
-            <button className="button is-medium is-rounded button-subscribe">
+            &nbsp;
+            <button className="button is-medium  button-subscribe">
               <span className="icon">
                 {' '}
                 <i className="far fa-bell" />{' '}
               </span>{' '}
-              <span>Nhận thông báo</span>
+              <span>Receive Notifications</span>
             </button>
           </div>
+          <div className="footer-company">
+            <i class="fas fa-comment-alt"></i>&nbsp; {comments.length} Comment
+            &nbsp; |&nbsp;
+            <i class="fas fa-share"></i>&nbsp; Share&nbsp; | &nbsp;
+            <i class="fas fa-eye"></i>&nbsp; {company.view} Views &nbsp; |
+            &nbsp;
+            <i class="fas fa-smile-wink"></i>&nbsp; Say Thanks
+          </div>
         </section>
+
         <section className="full-reviews">
           {/* Review Page Top */}
           {comments.length > 0 ? (

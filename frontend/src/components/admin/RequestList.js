@@ -1,6 +1,46 @@
 import React, { useState, useEffect, Fragment } from 'react';
+import {
+  getRequest,
+  getToggleStatus,
+  removeRequest1,
+} from '../actions/apiRequest';
 
-const RequestList = (props) => {
+const RequestList = () => {
+  const [request, setRequest] = useState([]);
+  const [error, setError] = useState(false);
+  const [toggleStatus, setToggleStatus] = useState({});
+
+  const loadRequest = () => {
+    getRequest().then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setRequest(data);
+      }
+    });
+  };
+  const clickToggleStatus = (idRequest, status1) => {
+    getToggleStatus(idRequest, status1).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        loadRequest();
+      }
+    });
+  };
+
+  const removeRequest = (idRequest) => {
+    removeRequest1(idRequest).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        loadRequest();
+      }
+    });
+  };
+  useEffect(() => {
+    loadRequest();
+  }, []);
   return (
     <div className="container company-list">
       <div className="table-wrapper">
@@ -8,7 +48,7 @@ const RequestList = (props) => {
           <div className="row">
             <div className="col-sm-4">
               <h3>
-                <i class="fas fa-building"></i> &nbsp;List of <b>Request</b>
+                <i class="fas fa-building"></i> &nbsp;List of <b>Requests</b>
               </h3>
             </div>
             <div className="col-sm-8"></div>
@@ -69,43 +109,73 @@ const RequestList = (props) => {
                 <i class="fab fa-adobe"></i>Name
               </th>
               <th>
-                <i class="fab fa-servicestack"></i>Type
+                <i class="fab fa-servicestack"></i>Email
               </th>
               <th>
-                <i class="fas fa-city"></i> City
+                <i class="fas fa-city"></i> Reason
               </th>
-              <th>
-                <i class="fas fa-flag-usa"></i>States
+              <th style={{ width: '250px' }}>
+                <i class="fas fa-flag-usa"></i>Content
               </th>
-              <th>
-                <i class="fas fa-grin-alt"></i>Status
-              </th>
-              <th>
-                <i class="fas fa-dove"></i>Action
-              </th>
+
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>a</td>
+            {request.map((p, i) => (
+              <tr
+                style={
+                  p.status == 0
+                    ? {
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        color: 'black',
+                        background: '#C2DBFF',
+                      }
+                    : {
+                        cursor: 'pointer',
+                        background: 'white',
+                      }
+                }
+                onClick={() => clickToggleStatus(p._id, p.status)}
+              >
+                <td>1</td>
+                <td>{p.name}</td>
 
-              <td>Product</td>
+                <td>{p.email}</td>
 
-              <td>a</td>
-              <td>a</td>
-
-              <td>a</td>
-              <td style={{ fontSize: '18px' }}>
-                <span class="badge badge-primary" style={{ cursor: 'pointer' }}>
-                  <i class="fas fa-edit"></i>&nbsp;Edit
-                </span>
-
-                <span class="badge badge-danger" style={{ cursor: 'pointer' }}>
-                  <i class="fas fa-trash-alt"></i>&nbsp;Delete
-                </span>
-              </td>
-            </tr>
+                <td>{p.reason}</td>
+                <td>{p.content}</td>
+                <td style={{ fontSize: '16px' }}>
+                  {' '}
+                  <span
+                    class="badge badge-danger"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => removeRequest(p._id)}
+                  >
+                    <i class="fas fa-trash-alt"></i>&nbsp;Delete
+                  </span>
+                </td>
+                <td style={{ fontSize: '18px' }}>
+                  {p.status == 0 ? (
+                    <span
+                      className="badge badge-danger"
+                      style={{ cursor: 'pointer' }}
+                    >
+                      UNSOLVED
+                    </span>
+                  ) : (
+                    <span
+                      className="badge badge-success"
+                      style={{ cursor: 'pointer' }}
+                    >
+                      SOLVED
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -1,13 +1,13 @@
 import { API } from '../../config';
 
-export const signin = (user) => {
+export const signin = (data) => {
   return fetch(`${API}/signin`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(user),
+    body: JSON.stringify(data),
   })
     .then((response) => {
       return response.json();

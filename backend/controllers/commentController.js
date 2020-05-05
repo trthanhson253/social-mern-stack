@@ -90,6 +90,7 @@ exports.averageRating = async (req, res) => {
   const slug = req.params.slug.toLowerCase();
   const company = await Company.findOne({ slug });
   var companyId = company._id;
+  console.log('companyId' + companyId);
   const comments = await Comment.find({ company: companyId });
   var sum = 0;
   var result = 0;
@@ -127,19 +128,17 @@ exports.list = (req, res) => {
     });
 };
 
-
-
 exports.removeComment = (req, res) => {
   const idComment = req.params.id;
-  console.log("Id la:"+idComment);
-    Comment.findOneAndRemove({ idComment }).exec((err, data) => {
-        if (err) {
-            return res.status(400).json({
-                error: 'Tag Not Found'
-            });
-        }
-        res.json({
-            message: 'Tag deleted successfully'
-        });
+  console.log('Id la:' + idComment);
+  Comment.findOneAndRemove({ idComment }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: 'Tag Not Found',
+      });
+    }
+    res.json({
+      message: 'Tag deleted successfully',
     });
+  });
 };

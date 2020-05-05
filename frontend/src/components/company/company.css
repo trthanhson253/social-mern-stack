@@ -1,0 +1,23 @@
+.breadcrumb {
+  background: white;
+  border-radius: 5px;
+}
+
+.company-info-company-page .company-info {
+  background: white;
+  border-radius: 5px;
+}
+.footer-company {
+  padding-left: 25px;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  color: #dc3545;
+  font-size: 12px;
+  font-weight: bold;
+}
+.company-create {
+  color: #007bff;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: Tahoma;
+}

@@ -35,6 +35,10 @@ const companySchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    view: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

@@ -14,7 +14,7 @@ const Routes = () => {
       <Header />
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/companies/:name" exact component={Company} />
+        <Route path="/companies/:slug" exact component={Company} />
         <Route path="/admin/company" exact component={CompanyList} />
         <Route path="/admin/comment" exact component={CommentList} />
         <Route path="/admin/request" exact component={RequestList} />

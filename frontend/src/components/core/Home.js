@@ -229,6 +229,7 @@ const Home = () => {
                 </div>
               ))}
             </div>
+
             {loadMoreButton()}
           </section>
 

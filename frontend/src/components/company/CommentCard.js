@@ -3,6 +3,7 @@ import LikeModal from './LikeModal';
 import ReplyModal from './ReplyModal';
 import ViolateModal from './ViolateModal';
 import moment from 'moment';
+import './company.css';
 
 const CommentCard = ({ comment, handleReload }) => {
   const [open, setOpen] = React.useState(false);
@@ -64,10 +65,15 @@ const CommentCard = ({ comment, handleReload }) => {
       />
       <header
         className="card-header"
-        style={{ padding: '0.01px', background: 'white' }}
+        style={{
+          padding: '0.01px',
+          background: 'white',
+          fontSize: 'small',
+          borderColor: 'white',
+        }}
       >
         <p className="card-header-title">
-          {comment.name} &nbsp;{' '}
+          {comment.name} ({comment.position})
           {comment.point && (
             <span>
               <span className="icon is-small has-text-warning">
@@ -100,35 +106,32 @@ const CommentCard = ({ comment, handleReload }) => {
           )}
           {comment.violate.length != 0 && (
             <span>
-              <i class="fas fa-thumbtack"></i>&nbsp; Đã bị đánh dấu vi phạm bởi{' '}
-              {comment.violate.length} người
+              <i class="fas fa-thumbtack"></i>&nbsp; Reported violate our policy
+              by {comment.violate.length} people
             </span>
           )}
         </p>
         <time className="review__time">
           <b>{moment(comment.createdAt).fromNow()}</b>
         </time>
-        <a
-          className="review__share"
-          href="https://reviewcongty.com/companies/shb-finance/review/5e7a51879a118024c42538da"
-        >
+        <a className="review__share" href="#">
           <i className="fas fa-link" style={{ marginRight: '5px' }} /> Share
         </a>
       </header>
-      <div className="card-content">
+      <div className="card-content" style={{ fontSize: 'small' }}>
         <div className="content text-500">
-          <div id="review_5e7a51879a118024c42538da">
+          <div>
             <span>{comment.content}</span>
           </div>
         </div>
       </div>
       <footer
         className="card-footer"
-        style={{ padding: '0.1px', background: 'white' }}
+        style={{ padding: '0.1px', background: 'white', fontSize: 'small' }}
       >
         <a
           href="#"
-          data-id="5e7a51879a118024c42538da"
+          data-id="#"
           data-prefill
           data-reaction="LIKE"
           className="link-comment card-footer-item clickable"
@@ -160,7 +163,7 @@ const CommentCard = ({ comment, handleReload }) => {
             {' '}
             <i className="fas fa-thumbs-up" />
           </span>
-          &nbsp;Thích
+          &nbsp;Like
         </span>
         <button
           data-action="collapse"
@@ -178,7 +181,7 @@ const CommentCard = ({ comment, handleReload }) => {
             {' '}
             <i className="fas fa-thumbs-down" />
           </span>
-          &nbsp;Ghét
+          &nbsp;Dislike
         </span>
         <span
           onClick={handleClickOpenViolate}
@@ -186,11 +189,10 @@ const CommentCard = ({ comment, handleReload }) => {
         >
           <span className="icon-ban icon is-medium">
             <span className="fa-stack fa-md">
-              <i className="fas fa-comments fa-stack-1x has-text-info" />
-              <i className="fas fa-ban fa-stack-2x has-text-danger" />
+              <i className="fas fa-flag fa-stack-1x has-text-info" />
             </span>
           </span>
-          &nbsp;Báo cáo vi phạm
+          &nbsp;Report
         </span>
       </footer>
       {likeCollapse && (

@@ -1,11 +1,57 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
+import { signin, authenticate, isAuthenticated } from '../actions/apiAuth';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import './Home.css';
+import { Redirect } from 'react-router-dom';
 
 const SigninModal = ({ open, handleClose }) => {
+  const [values, setValues] = useState({
+    email: '',
+    password: '',
+    redirectToReferrer: false,
+  });
+
+  const { email, password, redirectToReferrer } = values;
+  const { user } = isAuthenticated();
+
+  const handleChange = (name) => (e) => {
+    setValues({
+      ...values,
+      [name]: e.target.value,
+    });
+  };
+  const clickSubmit = (e) => {
+    e.preventDefault();
+    setValues({ ...values });
+    signin({ email, password }).then((data) => {
+      if (data.error) {
+        setValues({ ...values });
+      } else {
+        authenticate(data, () => {
+          setValues({
+            ...values,
+            redirectToReferrer: true,
+          });
+        });
+      }
+    });
+    handleClose();
+  };
+
+  const redirectUser = () => {
+    if (redirectToReferrer) {
+      if (user && user.role === 1) {
+        return <Redirect to="/admin/company" />;
+      } else {
+        return <Redirect to="/" />;
+      }
+    }
+    if (isAuthenticated()) {
+      return <Redirect to="/" />;
+    }
+  };
+
   return (
     <Fragment>
       <Dialog
@@ -14,53 +60,47 @@ const SigninModal = ({ open, handleClose }) => {
         aria-labelledby="form-dialog-title"
       >
         <DialogContent>
-          <div className="container">
-            <div className="row">
-              <h4>
-                <center> Login (Admin Only) </center>
-              </h4>
-            </div>
-
-            <hr />
-            <br />
-            <div className="input-group">
-              <div className="input-group-prepend">
-                <span className="input-group-text">
-                  <i className="fas fa-user-tie" />
-                </span>
+          <div className="login-form">
+            <form onSubmit={clickSubmit}>
+              <h2 className="text-center">
+                <i class="fas fa-user-circle"></i> Login [Admin Only]{' '}
+              </h2>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="email"
+                  value={email}
+                  onChange={handleChange('email')}
+                  className="form-control"
+                  placeholder="Email"
+                  required="required"
+                />
               </div>
-              <input
-                type="text"
-                name
-                className="form-control"
-                placeholder="username"
-              />
-            </div>
-            <br />
-            <div className="input-group">
-              <div className="input-group-prepend">
-                <span className="input-group-text">
-                  <i className="fa fa-key icon" />
-                </span>
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="password"
+                  value={password}
+                  onChange={handleChange('password')}
+                  className="form-control"
+                  placeholder="Password"
+                  required="required"
+                />
               </div>
-              <input
-                type="Password"
-                name
-                className="form-control"
-                placeholder="password"
-              />
-            </div>
-            <br />
-
-            <button type="submit" className="btn btn-success">
-              <i class="fas fa-sign-in-alt"></i> Login
-            </button>
-
-            <br />
-            <br />
+              <div className="form-group">
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-block"
+                  onClick={clickSubmit}
+                >
+                  Log in
+                </button>
+              </div>
+            </form>
           </div>
         </DialogContent>
       </Dialog>
+      {redirectUser()}
     </Fragment>
   );
 };

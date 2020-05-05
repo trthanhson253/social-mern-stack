@@ -95,7 +95,7 @@ const WriteReviewModal = ({
           </div>
           <div className="field">
             <label className="label">
-              Review công ty <span className="has-text-danger">(Bắt buộc)</span>
+              Review Company <span className="has-text-danger">(Bắt buộc)</span>
             </label>
             <div className="control">
               <textarea
@@ -144,10 +144,10 @@ const WriteReviewModal = ({
             onClick={clickSubmit}
             className="button button-review-submit is-success"
           >
-            Đăng Review
+            Post Review
           </button>
           <button onClick={handleClose} className="button button-close">
-            Hủy bỏ
+            Cancel
           </button>
         </DialogActions>
       </Dialog>

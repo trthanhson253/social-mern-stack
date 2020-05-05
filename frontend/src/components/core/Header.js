@@ -77,16 +77,6 @@ const Header = () => {
               </Link>
             </li>
           </ul>
-          <ul className="navbar-nav ">
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                <i className="fa fa-bell">
-                  <span className="badge badge-info">11</span>
-                </i>{' '}
-                Notifications
-              </a>
-            </li>
-          </ul>
           <button
             className="btn btn-outline-warning my-2 my-sm-0"
             type="submit"

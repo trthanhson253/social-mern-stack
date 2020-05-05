@@ -2,11 +2,44 @@ import React, { Fragment, useState, useEffect } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-
+import { createRequest } from '../actions/apiCore';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import '../admin/admin.css';
 const SendRequest = ({ openSendRequest, handleCloseSendRequest }) => {
+  const [values, setValues] = useState({
+    name: '',
+    email: '',
+    reason: '',
+    content: '',
+  });
+
+  const { name, email, reason, content } = values;
+
+  const handleChange = (name) => (e) => {
+    setValues({
+      ...values,
+      [name]: e.target.value,
+    });
+  };
+  const clickSubmit = (e) => {
+    e.preventDefault();
+    setValues({ ...values });
+    createRequest({ name, email, reason, content }).then((data) => {
+      if (data.error) {
+        setValues({ ...values });
+      } else {
+        setValues({
+          ...values,
+          name: '',
+          email: '',
+          reason: '',
+          content: '',
+        });
+      }
+    });
+    handleCloseSendRequest();
+  };
   return (
     <Fragment>
       <Dialog
@@ -29,6 +62,8 @@ const SendRequest = ({ openSendRequest, handleCloseSendRequest }) => {
               <input
                 className="input"
                 name="name"
+                onChange={handleChange('name')}
+                value={name}
                 type="text"
                 placeholder="Muốn xưng tên thật thì xưng không thì thui"
               />
@@ -39,9 +74,11 @@ const SendRequest = ({ openSendRequest, handleCloseSendRequest }) => {
             <div className="control">
               <input
                 className="input"
-                name="position"
+                name="email"
                 type="text"
-                placeholder="Dev quèn / HR hay Manager"
+                onChange={handleChange('email')}
+                value={email}
+                placeholder="Your email"
               />
             </div>
           </div>
@@ -49,14 +86,20 @@ const SendRequest = ({ openSendRequest, handleCloseSendRequest }) => {
             <label className="label">How do you want to help us today ?</label>
             <div className="control">
               <div className="select">
-                <select name="point">
-                  <option value="1">Add your company to our list</option>
-                  <option value="2">Report a company</option>
-                  <option value="3" selected>
+                <select
+                  name="reason"
+                  onChange={handleChange('reason')}
+                  value={reason}
+                >
+                  <option value="Add your company to our list">
+                    Add your company to our list
+                  </option>
+                  <option value="Report a company">Report a company</option>
+                  <option value="Report a comment" selected>
                     Report a comment
                   </option>
-                  <option value="4">Report Error</option>
-                  <option value="5">Others</option>
+                  <option value="Report Error">Report Error</option>
+                  <option value="Others">Others</option>
                 </select>
               </div>
             </div>
@@ -71,8 +114,9 @@ const SendRequest = ({ openSendRequest, handleCloseSendRequest }) => {
                 required
                 className="textarea"
                 name="content"
+                onChange={handleChange('content')}
+                value={content}
                 placeholder="Bức xúc hay gì thì viết dài dài vô (Tối thiểu 10 kí tự). Nếu muốn xin review, cứ bấm nút [Nhận thông báo] nha!!"
-                defaultValue={''}
               />
             </div>
           </div>
@@ -83,7 +127,10 @@ const SendRequest = ({ openSendRequest, handleCloseSendRequest }) => {
           </p>
         </DialogContent>
         <DialogActions>
-          <button className="button button-review-submit is-success">
+          <button
+            className="button button-review-submit is-success"
+            onClick={clickSubmit}
+          >
             Send Request
           </button>
           <button

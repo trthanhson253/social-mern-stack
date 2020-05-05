@@ -10,8 +10,6 @@ export const getCompany = () => {
     .catch((err) => console.log(err));
 };
 
-
-
 export const getFilteredCompany = (
   skip,
   limit,
@@ -40,4 +38,19 @@ export const getFilteredCompany = (
     .catch((err) => {
       console.log(err);
     });
+};
+
+export const createRequest = (data) => {
+  return fetch(`${API}/request/create`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
 };

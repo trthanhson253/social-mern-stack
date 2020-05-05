@@ -35,8 +35,8 @@ exports.list = (req, res) => {
 };
 
 exports.remove = (req, res) => {
-  const requestId = req.params.requestId;
-  Request.findOneAndRemove({ requestId }, { status: 0 }).exec((err, data) => {
+  const idRequest = req.params.idRequest;
+  Request.findOneAndRemove(idRequest).exec((err, data) => {
     if (err) {
       return res.status(400).json({
         error: 'Request Not Found',
@@ -45,5 +45,26 @@ exports.remove = (req, res) => {
     res.json({
       message: 'Request deleted successfully',
     });
+  });
+};
+
+exports.toggle = (req, res) => {
+  const idRequest = req.params.idRequest;
+  const status1 = req.params.status1;
+
+  var flag;
+  if (status1 == 0) {
+    flag = 1;
+  } else {
+    flag = 0;
+  }
+
+  Request.findByIdAndUpdate(idRequest, { status: flag }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: 'Not Found',
+      });
+    }
+    res.json(data);
   });
 };

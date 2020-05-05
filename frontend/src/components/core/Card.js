@@ -160,9 +160,15 @@ const Card = ({ company, loading }) => {
         }}
       >
         <b></b>
-        <i class="fas fa-comment-alt"></i>&nbsp; {comments.length}{' '}
-        Comments&nbsp; |&nbsp;
-        <i class="fas fa-share"></i>&nbsp; Share
+        <i class="fas fa-comment-alt"></i>&nbsp; {comments.length} Comment
+        {comments.length > 1 ? 's' : ''}&nbsp;| &nbsp;
+        <i class="fas fa-share"></i>&nbsp;+Share| &nbsp;
+        <i class="fas fa-smile-wink"></i>&nbsp; Say Thanks| &nbsp;
+        <i class="fas fa-eye"></i>&nbsp; {company.view} View
+        {company.view > 1 ? 's' : ''}| &nbsp;
+        <Link to={`/companies/${company.slug}`}>
+          <i class="fas fa-hand-point-right"></i>See
+        </Link>
       </div>
       <br />
     </div>

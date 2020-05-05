@@ -11,6 +11,16 @@ export const getCurrentCompany = (slug) => {
     .catch((err) => console.log(err));
 };
 
+export const getCurrentView = (slug) => {
+  return fetch(`${API}/companies/view/${slug}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+
 export const getAverageRating = (slug) => {
   return fetch(`${API}/averageRating/${slug}`, {
     method: 'GET',
@@ -136,35 +146,29 @@ export const removeCompany = (slug) => {
 //     .catch((err) => console.log(err));
 // };
 
-
-
 export const editSingleCompany = (slug, company) => {
-    return fetch(`${API}/admin/company/${slug}`, {
-        method: 'PUT',
-        headers: {
-            Accept: 'application/json',
-           
-        },
-        body: company
+  return fetch(`${API}/admin/company/${slug}`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+    },
+    body: company,
+  })
+    .then((response) => {
+      return response.json();
     })
-        .then(response => {
-            return response.json();
-        })
-        .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
 
-
 export const getHandleStatusAPI = (status) => {
-    return fetch(`${API}/admin/company/status/${status}`, {
-        method: 'GET',
-        headers: {
-            Accept: 'application/json',
-           
-        },
-        
+  return fetch(`${API}/admin/company/status/${status}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+    .then((response) => {
+      return response.json();
     })
-        .then(response => {
-            return response.json();
-        })
-        .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
