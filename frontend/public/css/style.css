@@ -60,7 +60,7 @@ body {
   min-height: 100vh;
 }
 a {
-  color: #00b7ff;
+  /* color: #00b7ff; */
 }
 a.white-link:hover {
   color: white;

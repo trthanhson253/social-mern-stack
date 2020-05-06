@@ -42,7 +42,7 @@ exports.like = async (req, res) => {
 
     await comment.save();
 
-    res.json(comment.likes);
+    res.json(comment);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -117,6 +117,7 @@ exports.list = (req, res) => {
     .select('_id name point content violate createdAt updatedAt')
     .populate('company', '_id name slug')
     .sort({ createdAt: -1 })
+    .limit(10)
     .exec((err, data) => {
       if (err) {
         return res.status(400).json({

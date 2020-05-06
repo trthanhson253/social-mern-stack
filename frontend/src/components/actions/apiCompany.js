@@ -172,3 +172,39 @@ export const getHandleStatusAPI = (status) => {
     })
     .catch((err) => console.log(err));
 };
+
+export const alreadyLiked = (data, next) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('like-' + data._id, JSON.stringify(data._id));
+    next();
+  }
+};
+
+export const isAlreadyLiked = (idComment) => {
+  if (typeof window == 'undefined') {
+    return false;
+  }
+  if (localStorage.getItem('like-' + idComment)) {
+    return JSON.parse(localStorage.getItem('like-' + idComment));
+  } else {
+    return false;
+  }
+};
+
+export const alreadyReply = (data, next) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('reply-' + data._id, JSON.stringify(data._id));
+    next();
+  }
+};
+
+export const isAlreadyReply = (idComment) => {
+  if (typeof window == 'undefined') {
+    return false;
+  }
+  if (localStorage.getItem('reply-' + idComment)) {
+    return JSON.parse(localStorage.getItem('reply-' + idComment));
+  } else {
+    return false;
+  }
+};

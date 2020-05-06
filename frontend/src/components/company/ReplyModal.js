@@ -3,7 +3,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import { reply } from '../actions/apiCompany';
+import { reply, alreadyReply } from '../actions/apiCompany';
 
 const ReplyModal = ({
   handleCloseReply,
@@ -31,6 +31,13 @@ const ReplyModal = ({
       if (data.error) {
         setValues({ ...values });
       } else {
+        alreadyLiked(data, () => {
+          setValues({
+            ...values,
+            reload: !reload,
+            name: '',
+          });
+        });
         setValues({
           ...values,
           reload: !reload,

@@ -3,7 +3,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import { like } from '../actions/apiCompany';
+import { like, alreadyLiked } from '../actions/apiCompany';
 
 const LikeModal = ({ handleClose, open, comment, handleReload }) => {
   const [values, setValues] = useState({
@@ -25,10 +25,12 @@ const LikeModal = ({ handleClose, open, comment, handleReload }) => {
       if (data.error) {
         setValues({ ...values });
       } else {
-        setValues({
-          ...values,
-          reload: !reload,
-          name: '',
+        alreadyLiked(data, () => {
+          setValues({
+            ...values,
+            reload: !reload,
+            name: '',
+          });
         });
       }
     });

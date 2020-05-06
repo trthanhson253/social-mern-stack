@@ -4,7 +4,7 @@ import ReplyModal from './ReplyModal';
 import ViolateModal from './ViolateModal';
 import moment from 'moment';
 import './company.css';
-
+import { isAlreadyLiked } from '../actions/apiCompany';
 const CommentCard = ({ comment, handleReload }) => {
   const [open, setOpen] = React.useState(false);
   const [openReply, setOpenReply] = React.useState(false);
@@ -42,7 +42,7 @@ const CommentCard = ({ comment, handleReload }) => {
     handleReload();
   };
 
-  console.log(comment);
+  console.log('isAuthenticated: ' + isAlreadyLiked());
   return (
     <div className="review card">
       <LikeModal
@@ -106,8 +106,8 @@ const CommentCard = ({ comment, handleReload }) => {
           )}
           {comment.violate.length != 0 && (
             <span>
-              <i class="fas fa-thumbtack"></i>&nbsp; Reported violate our policy
-              by {comment.violate.length} people
+              <i class="fas fa-thumbtack"></i>&nbsp; Reported violate by{' '}
+              {comment.violate.length} people
             </span>
           )}
         </p>
@@ -154,17 +154,34 @@ const CommentCard = ({ comment, handleReload }) => {
             <i class="fas fa-eye"></i>{' '}
           </span>
         </button>
-        <span
-          className="link-comment card-footer-item clickable"
-          onClick={handleClickOpen}
-        >
-          {comment.likes.length}
-          <span className="icon-like icon has-text-success">
-            {' '}
-            <i className="fas fa-thumbs-up" />
+        {!isAlreadyLiked(comment._id) && (
+          <span
+            className="link-comment card-footer-item clickable"
+            onClick={handleClickOpen}
+          >
+            {comment.likes.length}
+            <span className="icon-like icon has-text-success">
+              {' '}
+              <i className="fas fa-thumbs-up" />
+            </span>
+            &nbsp;Like
           </span>
-          &nbsp;Like
-        </span>
+        )}
+
+        {isAlreadyLiked(comment._id) && (
+          <span className="link-comment card-footer-item clickable">
+            {comment.likes.length}
+            <span className="icon-like icon has-text-success">
+              {' '}
+              <i className="fas fa-thumbs-up" />
+            </span>
+            &nbsp;
+            <b>
+              [Done!Thanks{' '}
+              <img alt="happy" src={require('../../static/img/happy.png')} />]
+            </b>
+          </span>
+        )}
         <button
           data-action="collapse"
           class="review__view_more card-footer-item clickable"
@@ -172,7 +189,7 @@ const CommentCard = ({ comment, handleReload }) => {
         >
           <span class="icon">
             {' '}
-            <i class="fas fa-eye"></i>{' '}
+            <i class="fas fa-chevron-circle-down"></i>{' '}
           </span>
         </button>
         <span className="link-comment card-footer-item clickable">
@@ -196,18 +213,20 @@ const CommentCard = ({ comment, handleReload }) => {
         </span>
       </footer>
       {likeCollapse && (
-        <div className="review-comments">
+        <div className="review-comments" style={{ fontSize: 'small' }}>
           {comment.likes.map((p, i) => (
             <div className="comment">
               <p className="comment__title">
                 <span className="has-text-weight-bold">
-                  {p.name} đã
+                  {p.name} liked
                   <span className="icon-like icon has-text-success">
                     <i className="fas fa-thumbs-up" />
                   </span>
                 </span>
-                &nbsp;bình luận này &nbsp; -{' '}
-                <b>{moment(comment.likes.date).fromNow()}</b>
+                &nbsp;this comment &nbsp; -{' '}
+                <b style={{ color: '#BD3734' }}>
+                  [{moment(comment.likes[0].date).fromNow()}]
+                </b>
               </p>
             </div>
           ))}
