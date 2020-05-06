@@ -32,17 +32,20 @@ const SigninModal = ({ open, handleClose }) => {
           setValues({
             ...values,
             redirectToReferrer: true,
+            username: '',
+            password: '',
           });
         });
       }
     });
+
     handleClose();
   };
 
   const redirectUser = () => {
     if (redirectToReferrer) {
       if (user && user.role === 1) {
-        return <Redirect to="/admin/company" />;
+        return <Redirect to="/" />;
       } else {
         return <Redirect to="/" />;
       }
