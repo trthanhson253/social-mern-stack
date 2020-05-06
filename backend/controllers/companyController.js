@@ -81,7 +81,7 @@ exports.read = (req, res) => {
       .populate('company', '_id name slug')
       .sort({ createdAt: -1 })
       .select(
-        '_id name position point content likes reply violate createdAt updatedAt'
+        '_id name position point content likes dislike reply violate createdAt updatedAt'
       )
       .exec((err, data) => {
         if (err) {

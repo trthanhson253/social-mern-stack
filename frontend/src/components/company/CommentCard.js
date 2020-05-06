@@ -4,13 +4,20 @@ import ReplyModal from './ReplyModal';
 import ViolateModal from './ViolateModal';
 import moment from 'moment';
 import './company.css';
-import { isAlreadyLiked } from '../actions/apiCompany';
+import {
+  isAlreadyLiked,
+  isAlreadyReport,
+  dislike,
+  alreadyDislike,
+  isAlreadyDislike,
+} from '../actions/apiCompany';
 const CommentCard = ({ comment, handleReload }) => {
   const [open, setOpen] = React.useState(false);
   const [openReply, setOpenReply] = React.useState(false);
   const [openViolate, setOpenViolate] = React.useState(false);
   const [likeCollapse, setLikeCollapse] = React.useState(false);
   const [replyCollapse, setReplyCollapse] = React.useState(false);
+  const [comment1, setComment1] = React.useState([]);
 
   const handleCloseViolate = () => {
     setOpenViolate(false);
@@ -41,8 +48,18 @@ const CommentCard = ({ comment, handleReload }) => {
   const handleReload1 = () => {
     handleReload();
   };
-
-  console.log('isAuthenticated: ' + isAlreadyLiked());
+  let id = comment._id;
+  const clickDislike = () => {
+    dislike(id).then((data) => {
+      if (data.error) {
+        console.log('Error');
+      } else {
+        alreadyDislike(data);
+        handleReload1();
+      }
+    });
+  };
+  // console.log('Comment dislike ' + JSON.stringify(comment));
   return (
     <div className="review card">
       <LikeModal
@@ -101,13 +118,15 @@ const CommentCard = ({ comment, handleReload }) => {
                   className={comment.point > 4 ? 'fas fa-star' : 'far fa-star'}
                 />
               </span>
-              &nbsp;
+              &nbsp;&nbsp;&nbsp;
             </span>
           )}
           {comment.violate.length != 0 && (
-            <span>
+            <span style={{ color: '#FF5678' }}>
+              {' '}
               <i class="fas fa-thumbtack"></i>&nbsp; Reported violate by{' '}
-              {comment.violate.length} people
+              {comment.violate.length}{' '}
+              {comment.violate.length > 1 ? 'people' : 'person'}
             </span>
           )}
         </p>
@@ -127,23 +146,24 @@ const CommentCard = ({ comment, handleReload }) => {
       </div>
       <footer
         className="card-footer"
-        style={{ padding: '0.1px', background: 'white', fontSize: 'small' }}
+        style={{
+          padding: '0.1px',
+          background: 'white',
+          fontSize: 'small',
+        }}
       >
-        <a
-          href="#"
-          data-id="#"
-          data-prefill
-          data-reaction="LIKE"
+        <span
           className="link-comment card-footer-item clickable"
           onClick={handleClickOpenReply}
         >
-          {comment.reply.length}
+          {comment.reply.length}&nbsp;
           <span className="icon-reply icon has-text-info">
             {' '}
             <i className="fas fa-comments" />{' '}
           </span>{' '}
           Reply
-        </a>
+        </span>
+
         <button
           data-action="collapse"
           class="review__view_more card-footer-item clickable"
@@ -192,25 +212,62 @@ const CommentCard = ({ comment, handleReload }) => {
             <i class="fas fa-chevron-circle-down"></i>{' '}
           </span>
         </button>
-        <span className="link-comment card-footer-item clickable">
-          0
-          <span className="icon-dislike icon has-text-danger">
-            {' '}
-            <i className="fas fa-thumbs-down" />
-          </span>
-          &nbsp;Dislike
-        </span>
-        <span
-          onClick={handleClickOpenViolate}
-          className="link-comment card-footer-item clickable"
-        >
-          <span className="icon-ban icon is-medium">
-            <span className="fa-stack fa-md">
-              <i className="fas fa-flag fa-stack-1x has-text-info" />
+        {!isAlreadyDislike(comment._id) && (
+          <span
+            className="link-comment card-footer-item clickable"
+            onClick={clickDislike}
+          >
+            {comment.dislike.length}
+            <span className="icon-dislike icon has-text-danger">
+              {' '}
+              <i className="fas fa-thumbs-down" />
             </span>
+            &nbsp;Dislike
           </span>
-          &nbsp;Report
-        </span>
+        )}
+        {isAlreadyDislike(comment._id) && (
+          <span className="link-comment card-footer-item clickable">
+            {comment.dislike.length}
+            <span className="icon-dislike icon has-text-danger">
+              {' '}
+              <i className="fas fa-thumbs-down" />
+            </span>
+            &nbsp;
+            <b>
+              [Oops!You clicked it{' '}
+              <img alt="happy" src={require('../../static/img/clap.png')} />
+              ]]
+            </b>
+          </span>
+        )}
+
+        {!isAlreadyReport(comment._id) && (
+          <span
+            onClick={handleClickOpenViolate}
+            className="link-comment card-footer-item clickable"
+          >
+            <span className="icon-ban icon is-medium">
+              <span className="fa-stack fa-md">
+                <i className="fas fa-flag fa-stack-1x has-text-info" />
+              </span>
+            </span>
+            &nbsp;Report
+          </span>
+        )}
+        {isAlreadyReport(comment._id) && (
+          <span className="link-comment card-footer-item clickable">
+            <span className="icon-ban icon is-medium">
+              <span className="fa-stack fa-md">
+                <i className="fas fa-flag fa-stack-1x has-text-info" />
+              </span>
+            </span>
+
+            <b>
+              Thanks!We will check it soon
+              <img alt="happy" src={require('../../static/img/sad.png')} />
+            </b>
+          </span>
+        )}
       </footer>
       {likeCollapse && (
         <div className="review-comments" style={{ fontSize: 'small' }}>
@@ -237,8 +294,8 @@ const CommentCard = ({ comment, handleReload }) => {
           {comment.reply.map((p, i) => (
             <div className="comment">
               <p className="comment__title">
-                <span className="has-text-weight-bold">{p.name} đã</span>
-                trả lời bình luận này &nbsp;{' '}
+                <span className="has-text-weight-bold">{p.name} replied</span>
+                to this comment &nbsp;{' '}
                 <b>{moment(comment.reply.date).fromNow()}</b>
               </p>
               <p class="comment__content text-500">{p.content}</p>

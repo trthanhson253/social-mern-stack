@@ -31,13 +31,6 @@ const ReplyModal = ({
       if (data.error) {
         setValues({ ...values });
       } else {
-        alreadyLiked(data, () => {
-          setValues({
-            ...values,
-            reload: !reload,
-            name: '',
-          });
-        });
         setValues({
           ...values,
           reload: !reload,

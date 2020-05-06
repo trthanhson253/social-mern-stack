@@ -61,7 +61,7 @@ exports.reply = async (req, res) => {
 
     await comment.save();
 
-    res.json(comment.reply);
+    res.json(comment);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -79,7 +79,7 @@ exports.violate = async (req, res) => {
 
     await comment.save();
 
-    res.json(comment.reply);
+    res.json(comment);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -142,4 +142,20 @@ exports.removeComment = (req, res) => {
       message: 'Tag deleted successfully',
     });
   });
+};
+
+exports.dislike = async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    const newDisLikes = {};
+
+    comment.dislike.unshift(newDisLikes);
+
+    await comment.save();
+
+    res.json(comment);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
 };

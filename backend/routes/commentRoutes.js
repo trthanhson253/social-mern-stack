@@ -7,7 +7,8 @@ const {
   violate,
   averageRating,
   list,
-  removeComment
+  removeComment,
+  dislike,
 } = require('../controllers/commentController');
 const { runValidation } = require('../validators');
 const { commentCreateValidator } = require('../validators/commentValidator');
@@ -15,6 +16,7 @@ const { commentCreateValidator } = require('../validators/commentValidator');
 router.post('/comment', commentCreateValidator, runValidation, create);
 router.get('/comment', list);
 router.put('/like/:id', like);
+router.put('/dislike/:id', dislike);
 router.post('/reply/:id', reply);
 router.post('/violate/:id', violate);
 

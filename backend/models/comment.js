@@ -36,6 +36,14 @@ const commentSchema = new mongoose.Schema(
         },
       },
     ],
+    dislike: [
+      {
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     reply: [
       {
         name: {

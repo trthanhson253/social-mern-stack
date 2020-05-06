@@ -65,7 +65,7 @@ const Company = (props) => {
       }
     });
   };
-  console.log('rating là:' + avgRating.result);
+  // console.log('rating là:' + avgRating.result);
 
   const toggleModalState = () => {
     setModalState(!modalState);
@@ -263,10 +263,11 @@ const Company = (props) => {
           </div>
           <div className="footer-company">
             <i class="fas fa-comment-alt"></i>&nbsp; {comments.length} Comment
+            {comments.length > 1 ? 's' : ''}
             &nbsp; |&nbsp;
             <i class="fas fa-share"></i>&nbsp; Share&nbsp; | &nbsp;
-            <i class="fas fa-eye"></i>&nbsp; {company.view} Views &nbsp; |
-            &nbsp;
+            <i class="fas fa-eye"></i>&nbsp; {company.view} View
+            {company.view > 1 ? 's' : ''} &nbsp; | &nbsp;
             <i class="fas fa-smile-wink"></i>&nbsp; Say Thanks
           </div>
         </section>

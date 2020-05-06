@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import SigninModal from './SigninModal';
 import SendRequest from './SendRequest';
 import { isAuthenticated, signout } from '../actions/apiAuth';
-
+import './Home.css';
 const Header = ({ history }) => {
   const [open, setOpen] = useState(false);
   const [openSendRequest, setOpenSendRequest] = useState(false);
@@ -75,8 +75,9 @@ const Header = ({ history }) => {
                 <li className="nav-item active">
                   <Link to="/admin/request" className="nav-link">
                     <span className="badge badge-success">
-                      <i class="fas fa-box-open"></i> Request Box
+                      <i className="fas fa-box-open"></i> Request Box
                     </span>
+                    <span className="badge-new">10</span>
                   </Link>
                 </li>
               </React.Fragment>

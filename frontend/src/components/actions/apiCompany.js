@@ -62,6 +62,20 @@ export const like = (name, id) => {
     .catch((err) => console.log(err));
 };
 
+export const dislike = (id) => {
+  return fetch(`${API}/dislike/${id}`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+
 export const reply = (data, id) => {
   return fetch(`${API}/reply/${id}`, {
     method: 'POST',
@@ -191,19 +205,54 @@ export const isAlreadyLiked = (idComment) => {
   }
 };
 
-export const alreadyReply = (data, next) => {
+// export const alreadyReply = (data, next) => {
+//   if (typeof window !== 'undefined') {
+//     sessionStorage.setItem('reply-' + data._id, JSON.stringify(data._id));
+//     next();
+//   }
+// };
+
+// export const isAlreadyReply = (idComment) => {
+//   if (typeof window == 'undefined') {
+//     return false;
+//   }
+//   if (sessionStorage.getItem('reply-' + idComment)) {
+//     return JSON.parse(sessionStorage.getItem('reply-' + idComment));
+//   } else {
+//     return false;
+//   }
+// };
+
+export const alreadyReport = (data, next) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('reply-' + data._id, JSON.stringify(data._id));
+    localStorage.setItem('report-' + data._id, JSON.stringify(data._id));
     next();
   }
 };
 
-export const isAlreadyReply = (idComment) => {
+export const isAlreadyReport = (idComment) => {
   if (typeof window == 'undefined') {
     return false;
   }
-  if (localStorage.getItem('reply-' + idComment)) {
-    return JSON.parse(localStorage.getItem('reply-' + idComment));
+  if (localStorage.getItem('report-' + idComment)) {
+    return JSON.parse(localStorage.getItem('report-' + idComment));
+  } else {
+    return false;
+  }
+};
+
+export const alreadyDislike = (data) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('dislike-' + data._id, JSON.stringify(data._id));
+  }
+};
+
+export const isAlreadyDislike = (idComment) => {
+  if (typeof window == 'undefined') {
+    return false;
+  }
+  if (localStorage.getItem('dislike-' + idComment)) {
+    return JSON.parse(localStorage.getItem('dislike-' + idComment));
   } else {
     return false;
   }
