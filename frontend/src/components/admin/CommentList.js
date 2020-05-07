@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { getNewestComment,removeComment } from '../actions/apiComment';
+import { getNewestComment, removeComment } from '../actions/apiComment';
 import './admin.css';
+import Auto from './Auto';
 
 const CommentList = (props) => {
   const [comment, setComment] = useState([]);
@@ -24,9 +25,8 @@ const CommentList = (props) => {
     });
   };
 
-  const deleteComment=(idComment)=>{
-    
-     removeComment(idComment).then((data) => {
+  const deleteComment = (idComment) => {
+    removeComment(idComment).then((data) => {
       if (data.error) {
         setError(data.error);
       } else {
@@ -34,12 +34,19 @@ const CommentList = (props) => {
       }
     });
   };
-  
+
   useEffect(() => {
     loadNewestComment();
   }, []);
   return (
     <div>
+      <div className="App">
+        <h1>Custom AutoComplete React</h1>
+        <div className="logo"></div>
+        <div className="auto-container">
+          <Auto />
+        </div>
+      </div>
       <div className="container company-list">
         <div className="table-wrapper">
           <div className="table-title">
@@ -138,17 +145,24 @@ const CommentList = (props) => {
                   <td>{p.content}</td>
                   <td>{p.company[0].name}</td>
 
-                  <td style={{ fontSize: '18px' }}>{p.violate.length}  <span class="badge badge-warning">
-                      {p.violate.length>0 && 
-                        (<i class="fas fa-eraser">{' '}Reset To 0</i>)
-                      }
-                    </span></td> 
+                  <td style={{ fontSize: '18px' }}>
+                    {p.violate.length}{' '}
+                    <span class="badge badge-warning">
+                      {p.violate.length > 0 && (
+                        <i class="fas fa-eraser"> Reset To 0</i>
+                      )}
+                    </span>
+                  </td>
 
                   <td>
                     <span className="status text-success">•</span> Active
                   </td>
                   <td style={{ fontSize: '18px' }}>
-                    <span class="badge badge-danger" onClick={() => deleteComment(p._id)} style={{ cursor: 'pointer' }}>
+                    <span
+                      class="badge badge-danger"
+                      onClick={() => deleteComment(p._id)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <i class="fas fa-trash-alt"></i>&nbsp;Delete
                     </span>
                   </td>
