@@ -1,11 +1,17 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import './admin.css';
-import { getFilteredCompany } from '../actions/apiCore';
-import { removeCompany, getHandleStatusAPI } from '../actions/apiCompany';
+import { getFilteredCompany, paginationCompany } from '../actions/apiCore';
+import {
+  removeCompany,
+  getHandleStatusAPI,
+  listSearch,
+} from '../actions/apiCompany';
 import { API } from '../../config';
 import AddCompanyModal from './AddCompanyModal';
 import { Link } from 'react-router-dom';
 import EditCompanyModal from './EditCompanyModal';
+import CompanyStatus from './CompanyStatus';
+import moment from 'moment';
 
 const CompanyList = () => {
   const [company, setCompany] = useState([]);
@@ -18,15 +24,13 @@ const CompanyList = () => {
   const [slug, setSlug] = useState({});
   const [openEdit, setOpenEdit] = useState(false);
   const [companyToEdit, setCompanyToEdit] = useState([]);
-  const [status, setStatus] = useState({});
+  // const [status, setStatus] = useState({});
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [numberOfPage, setNumberOfPage] = useState(1);
 
-  const handleChangeStatus = (e) => {
-    setStatus(e.target.value);
-    getHandleStatus();
-  };
-  console.log('status là:' + status);
-  const getHandleStatus = () => {
-    getHandleStatusAPI(status).then((data) => {
+  const getHandleStatus = (status1) => {
+    getHandleStatusAPI(status1).then((data) => {
       setCompany(data);
       setLoading(true);
       setSize(data.size);
@@ -48,46 +52,7 @@ const CompanyList = () => {
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
-  const loadCompany = () => {
-    getFilteredCompany(skip, limit).then((data) => {
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setCompany(data.data);
-        setLoading(true);
-        setSize(data.size);
-        setSkip(0);
-      }
-    });
-  };
-  // console.log("openEdit"+openEdit);
-  // console.log("companyToEdit"+JSON.stringify(slug));
 
-  const loadMore = () => {
-    let toSkip = skip + limit;
-    // console.log(newFilters);
-    getFilteredCompany(toSkip, limit).then((data) => {
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setCompany([...company, ...data.data]);
-        setLoading(true);
-        setSize(data.size);
-        setSkip(toSkip);
-      }
-    });
-  };
-
-  const loadMoreButton = () => {
-    return (
-      size > 0 &&
-      size >= limit && (
-        <button onClick={loadMore} className="btn btn-warning mb-5">
-          Load more
-        </button>
-      )
-    );
-  };
   const deleteCompany = (slug) => {
     removeCompany(slug).then((data) => {
       if (data.error) {
@@ -97,14 +62,98 @@ const CompanyList = () => {
       }
     });
   };
-  const orderNumber = () => {
-    for (let i = 0; i < company.length; i++) {
-      return i + 1;
+  const showCompanyOrder = () => {
+    return <Fragment>1</Fragment>;
+  };
+
+  const handleChange = (name) => (event) => {
+    setSearch({ [name]: event.target.value });
+  };
+
+  const searchCompany = () => {
+    listSearch(search).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setCompany(data);
+        setLoading(true);
+        setSize(data.size);
+        setSkip(0);
+      }
+    });
+  };
+
+  const loadCompany = (page) => {
+    paginationCompany(page).then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setCompany(data.company);
+        setNumberOfPage(data.numberOfPages);
+      }
+    });
+  };
+
+  const paginateNumber = (number) => {
+    setPage(number);
+    loadCompany(number);
+  };
+
+  const showPage = () => {
+    const arr = [];
+    for (let i = 1; i <= numberOfPage; i++) {
+      arr.push(i);
     }
+    return (
+      <Fragment>
+        <ul className="pagination-list">
+          <li>
+            <a href="#" className="pagination-link" onClick={() => loadLess(1)}>
+              «
+            </a>
+          </li>
+          {arr.map((number) => (
+            <li key={number}>
+              <a
+                href="#"
+                className="pagination-link is-current"
+                onClick={() => paginateNumber(number)}
+              >
+                {number}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href="#"
+              className="pagination-link "
+              onClick={() => loadMore(1)}
+            >
+              »
+            </a>
+          </li>
+        </ul>
+      </Fragment>
+    );
+  };
+
+  const loadMore = (number) => {
+    let toSkip = page + number;
+    setPage(toSkip);
+    loadCompany(toSkip);
+  };
+
+  const loadLess = (number) => {
+    let toSkip = page - number;
+    setPage(toSkip);
+    loadCompany(toSkip);
   };
   useEffect(() => {
-    loadCompany();
+    loadCompany(page);
   }, []);
+  useEffect(() => {
+    searchCompany();
+  }, [search]);
   return (
     <div className="container company-list">
       <AddCompanyModal
@@ -154,7 +203,13 @@ const CompanyList = () => {
               </button>
               <div className="filter-group">
                 <label>Name</label>
-                <input type="text" className="form-control" />
+                <input
+                  name="search"
+                  type="text"
+                  className="form-control"
+                  placeholder="Name of Company"
+                  onChange={handleChange('search')}
+                />
               </div>
               <div className="filter-group">
                 <label>Location</label>
@@ -167,22 +222,9 @@ const CompanyList = () => {
                   <option>Paris</option>
                 </select>
               </div>
-              <div className="filter-group">
-                <label>Status</label>
-                <select
-                  className="form-control"
-                  name="status"
-                  onChange={handleChangeStatus}
-                  value={status}
-                >
-                  <option value="2">Any</option>
-                  <option value="1">Active</option>
-                  <option value="0">Inactive</option>
-                </select>
-              </div>
-              <span className="filter-icon">
-                <i className="fa fa-filter" />
-              </span>
+              <CompanyStatus
+                getHandleStatus={(filters) => getHandleStatus(filters)}
+              />
             </div>
           </div>
         </div>
@@ -200,10 +242,13 @@ const CompanyList = () => {
                 <i class="fas fa-city"></i> City
               </th>
               <th>
-                <i class="fas fa-flag-usa"></i>States
+                <i class="fas fa-flag-usa"></i>State
               </th>
               <th>
                 <i class="fas fa-grin-alt"></i>Status
+              </th>
+              <th>
+                <i class="fas fa-grin-alt"></i>Created At
               </th>
               <th>
                 <i class="fas fa-dove"></i>Action
@@ -213,7 +258,7 @@ const CompanyList = () => {
           <tbody>
             {company.map((p, i) => (
               <tr>
-                <td>{orderNumber()}</td>
+                <td>{showCompanyOrder()}</td>
                 <td>
                   <img
                     src={`${API}/company/photo/${p.slug}`}
@@ -244,6 +289,7 @@ const CompanyList = () => {
                     </div>
                   )}
                 </td>
+                <td>{moment(p.createdAt).format('MM-DD-YYYY')}</td>
                 <td style={{ fontSize: '18px' }}>
                   <span
                     class="badge badge-primary"
@@ -265,12 +311,7 @@ const CompanyList = () => {
             ))}
           </tbody>
         </table>
-        <div className="clearfix">
-          <div className="hint-text">
-            Showing <b>5</b> out of <b>25</b> entries
-          </div>
-          <ul>{loadMoreButton()}</ul>
-        </div>
+        <div className="clearfix">{showPage()}</div>
       </div>
     </div>
   );

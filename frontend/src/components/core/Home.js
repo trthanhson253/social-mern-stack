@@ -1,23 +1,29 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from './Card';
-import { getCompany, getFilteredCompany } from '../actions/apiCore';
+import { getFilteredCompany } from '../actions/apiCore';
 import { getNewestComment } from '../actions/apiComment';
 import './Home.css';
 import Search from './Search';
 import NewestCommentCard from './NewestCommentCard';
-import SigninModal from './SigninModal';
 import { STATES } from '../../config';
+import { listSearch } from '../actions/apiCompany';
 
 const Home = () => {
   const [newestCompany, setNewestCompany] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newestComment, setNewestComment] = useState([]);
   const [error, setError] = useState(false);
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(6);
   const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(0);
   const [open, setOpen] = useState(false);
   const [filterByState, setFilterByState] = useState('');
+  const [result, setResult] = useState([]);
+  const [keyword, setKeyword] = useState('');
+  const [isTop, setIsTop] = useState(false);
+  const [isNewest, setIsNewest] = useState(false);
+  const [isWorst, setIsWorst] = useState(false);
+
   let sortBy,
     order = '';
 
@@ -33,11 +39,13 @@ const Home = () => {
       if (data.error) {
         setError(data.error);
       } else {
-        console.log('Dữ liêu là:' + data.data);
         setNewestCompany(data.data);
         setLoading(true);
         setSize(data.size);
         setSkip(0);
+        setIsNewest(true);
+        setIsTop(false);
+        setIsWorst(false);
       }
     });
   };
@@ -48,10 +56,14 @@ const Home = () => {
         if (data.error) {
           setError(data.error);
         } else {
+          console.log('TOP COMPANIES', data.data);
           setNewestCompany(data.data);
           setLoading(true);
           setSize(data.size);
           setSkip(0);
+          setIsTop(true);
+          setIsNewest(false);
+          setIsWorst(false);
         }
       }
     );
@@ -71,6 +83,9 @@ const Home = () => {
         setLoading(true);
         setSize(data.size);
         setSkip(0);
+        setIsWorst(true);
+        setIsTop(false);
+        setIsNewest(false);
       }
     });
   };
@@ -95,6 +110,52 @@ const Home = () => {
         setLoading(true);
         setSize(data.size);
         setSkip(toSkip);
+        setIsNewest(true);
+        setIsTop(false);
+        setIsWorst(false);
+      }
+    });
+  };
+
+  const loadMoreTop = () => {
+    let toSkip = skip + limit;
+    // console.log(newFilters);
+    getFilteredCompany(toSkip, limit, (sortBy = 'avgRating'), order).then(
+      (data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setNewestCompany([...newestCompany, ...data.data]);
+          setLoading(true);
+          setSize(data.size);
+          setSkip(toSkip);
+          setIsTop(true);
+          setIsNewest(false);
+          setIsWorst(false);
+        }
+      }
+    );
+  };
+
+  const loadMoreWorst = () => {
+    let toSkip = skip + limit;
+    // console.log(newFilters);
+    getFilteredCompany(
+      toSkip,
+      limit,
+      (sortBy = 'avgRating'),
+      (order = 'asc')
+    ).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setNewestCompany([...newestCompany, ...data.data]);
+        setLoading(true);
+        setSize(data.size);
+        setSkip(toSkip);
+        setIsTop(false);
+        setIsNewest(false);
+        setIsWorst(true);
       }
     });
   };
@@ -113,16 +174,45 @@ const Home = () => {
     );
   };
 
+  const loadMoreButtonTop = () => {
+    return (
+      size > 0 &&
+      size >= limit && (
+        <center>
+          {' '}
+          <button onClick={loadMoreTop} className="btn btn-warning mb-5">
+            Load more
+          </button>
+        </center>
+      )
+    );
+  };
+
+  const loadMoreButtonWorst = () => {
+    return (
+      size > 0 &&
+      size >= limit && (
+        <center>
+          {' '}
+          <button onClick={loadMoreWorst} className="btn btn-warning mb-5">
+            Load more
+          </button>
+        </center>
+      )
+    );
+  };
+
   const handleStateChange = (e) => {
     setFilterByState(e);
   };
-  console.log(filterByState);
+
   const loadFilterByState = () => {
     getFilteredCompany(skip, limit, sortBy, order, filterByState).then(
       (data) => {
         if (data.error) {
           setError(data.error);
         } else {
+          console.log('FILTER BY STATE', data.data);
           setNewestCompany(data.data);
           setLoading(true);
           setSize(data.size);
@@ -131,6 +221,29 @@ const Home = () => {
       }
     );
   };
+  const handleFiltersChange = (newFilters) => {
+    console.log(newFilters);
+    setKeyword(newFilters);
+  };
+  const searchCompany = (keyword) => {
+    listSearch(keyword).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setResult(data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (keyword !== null && keyword !== '') {
+      searchCompany(keyword);
+    }
+    return () => {
+      setResult([]);
+    };
+  }, [keyword]);
+
   useEffect(() => {
     loadNewestCompany();
     loadNewestComment();
@@ -150,10 +263,14 @@ const Home = () => {
         <section className="hero">
           <div className="hero-body z-1">
             <h1 className="title has-text-white">
-              Feel free to say what you think. No Registration Required.
+              Feel free to say what you think.
             </h1>
             <div>
-              <Search />
+              <Search
+                onSubmit={handleFiltersChange}
+                result={result}
+                loading={loading}
+              />
             </div>
           </div>
         </section>
@@ -163,7 +280,7 @@ const Home = () => {
               <ul>
                 <li
                   data-tab="top-comments"
-                  className="tab is-active"
+                  className="tab"
                   onClick={loadNewestCompany}
                 >
                   <a href="#" className="has-text-weight-bold">
@@ -197,24 +314,32 @@ const Home = () => {
                       {' '}
                       <i className="fas fa-thumbs-down" />{' '}
                     </span>{' '}
-                    Avoid These Companies
+                    Worst Companies
                   </a>
                 </li>
                 <div>
                   <span className="icon has-text-info">
                     <i class="fas fa-filter" />
                   </span>
-                  Quick Filter :
+                  <b>Sort </b>
                   <select
                     style={{ width: '100px' }}
                     onChange={(e) => handleStateChange(e.target.value)}
                   >
-                    <option value="all">By States</option>
+                    <option value="all">-By State-</option>
                     {states.map((p, i) => (
                       <option value={p.abbreviation} key={i}>
                         {p.name}
                       </option>
                     ))}
+                  </select>
+                  &nbsp;
+                  <select style={{ width: '80px' }}>
+                    <option>-By Type-</option>
+
+                    <option value="0">Product</option>
+                    <option value="1">Service</option>
+                    <option value="2">Consultancy</option>
                   </select>
                 </div>
               </ul>
@@ -230,7 +355,9 @@ const Home = () => {
               ))}
             </div>
 
-            {loadMoreButton()}
+            {isNewest && loadMoreButton()}
+            {isTop && loadMoreButtonTop()}
+            {isWorst && loadMoreButtonWorst()}
           </section>
 
           <section className="summary-reviews column">

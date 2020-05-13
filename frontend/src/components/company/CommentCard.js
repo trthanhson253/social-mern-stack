@@ -184,7 +184,7 @@ const CommentCard = ({ comment, handleReload }) => {
               {' '}
               <i className="fas fa-thumbs-up" />
             </span>
-            &nbsp;Like
+            &nbsp;Agree
           </span>
         )}
 
@@ -222,7 +222,7 @@ const CommentCard = ({ comment, handleReload }) => {
               {' '}
               <i className="fas fa-thumbs-down" />
             </span>
-            &nbsp;Dislike
+            &nbsp;Disagree
           </span>
         )}
         {isAlreadyDislike(comment._id) && (

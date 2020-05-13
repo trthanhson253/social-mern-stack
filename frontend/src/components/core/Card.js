@@ -1,13 +1,21 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { API } from '../../config';
-import { getCurrentCompany, getAverageRating } from '../actions/apiCompany';
+import {
+  getCurrentCompany,
+  getAverageRating,
+  love,
+  alreadyLoved,
+  isAlreadyLoved,
+} from '../actions/apiCompany';
 import Spinner from '../core/Spinner';
+import moment from 'moment';
 
 const Card = ({ company, loading }) => {
   const [comments, setComment] = useState([]);
   const [avgRating, setAvgRating] = useState(false);
   const [error, setError] = useState(false);
+  const [love1, setLove1] = useState(company.love);
 
   const loadCurrentCompany = (slug) => {
     getCurrentCompany(slug).then((data) => {
@@ -15,6 +23,7 @@ const Card = ({ company, loading }) => {
         setError(data.error);
       } else {
         setComment(data.comment);
+        setLove1(data.company.love);
       }
     });
   };
@@ -24,6 +33,16 @@ const Card = ({ company, loading }) => {
         setError(data.error);
       } else {
         setAvgRating(data);
+      }
+    });
+  };
+  const handleLove = (slug) => {
+    love(slug).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        alreadyLoved(data);
+        loadCurrentCompany(slug);
       }
     });
   };
@@ -46,24 +65,24 @@ const Card = ({ company, loading }) => {
           />
         </figure>
         <div className="company-info__detail">
-          <h2 className="is-size-5 has-text-weight-semibold company-info__name">
+          <h1 className="is-size-5 has-text-weight-semibold company-info__name">
             <Link to={`/companies/${company.slug}`}>{company.name}</Link>{' '}
             <span className="company-info__rating">
-              {avgRating.result >= 1 ? (
+              {company.avgRating >= 1 ? (
                 <span>
                   <span className="icon is-small has-text-warning">
                     <i
                       className={
-                        avgRating.result >= 1 ? 'fas fa-star' : 'far fa-star'
+                        company.avgRating >= 1 ? 'fas fa-star' : 'far fa-star'
                       }
                     />
                   </span>
                   <span className="icon is-small has-text-warning">
                     <i
                       className={
-                        avgRating.result >= 2
+                        company.avgRating >= 2
                           ? 'fas fa-star'
-                          : avgRating.result >= 1.5
+                          : company.avgRating >= 1.5
                           ? 'fas fa-star-half-alt'
                           : 'far fa-star'
                       }
@@ -72,9 +91,9 @@ const Card = ({ company, loading }) => {
                   <span className="icon is-small has-text-warning">
                     <i
                       className={
-                        avgRating.result >= 3
+                        company.avgRating >= 3
                           ? 'fas fa-star'
-                          : avgRating.result >= 2.5
+                          : company.avgRating >= 2.5
                           ? 'fas fa-star-half-alt'
                           : 'far fa-star'
                       }
@@ -83,9 +102,9 @@ const Card = ({ company, loading }) => {
                   <span className="icon is-small has-text-warning">
                     <i
                       className={
-                        avgRating.result >= 4
+                        company.avgRating >= 4
                           ? 'fas fa-star'
-                          : avgRating.result >= 3.5
+                          : company.avgRating >= 3.5
                           ? 'fas fa-star-half-alt'
                           : 'far fa-star'
                       }
@@ -94,9 +113,9 @@ const Card = ({ company, loading }) => {
                   <span className="icon is-small has-text-warning">
                     <i
                       className={
-                        avgRating.result == 5
+                        company.avgRating == 5
                           ? 'fas fa-star'
-                          : avgRating.result >= 4.5
+                          : company.avgRating >= 4.5
                           ? 'fas fa-star-half-alt'
                           : 'far fa-star'
                       }
@@ -123,23 +142,28 @@ const Card = ({ company, loading }) => {
                 </span>
               )}
             </span>
-          </h2>
+          </h1>
+
           <div className="company-info__other">
-            <span style={{ marginRight: '0.3rem' }}>
+            <span
+              style={{
+                marginRight: '0.3rem',
+                color: '#FF3860',
+              }}
+            >
               <span className="icon">
                 {' '}
                 <i className="fas fa-briefcase" />
               </span>{' '}
-              {company.type}
+              {company.type == 0 ? (
+                <td>Product</td>
+              ) : company.type > 1 ? (
+                <td>Consultancy</td>
+              ) : (
+                <td>Service</td>
+              )}
             </span>
-            <span>
-              <span className="icon">
-                {' '}
-                <i className="fas fa-users" />{' '}
-              </span>{' '}
-            </span>
-          </div>
-          <div className="company-info__location">
+            -
             <span>
               <span className="icon">
                 {' '}
@@ -150,6 +174,7 @@ const Card = ({ company, loading }) => {
           </div>
         </div>
       </div>
+
       <div
         className="level-right"
         style={{
@@ -160,17 +185,30 @@ const Card = ({ company, loading }) => {
         }}
       >
         <b></b>
+        <span>[Posted {moment(company.createdAt).format('MM-DD-YYYY')}]</span>
+        &nbsp;| &nbsp;
         <i class="fas fa-comment-alt"></i>&nbsp; {comments.length} Comment
         {comments.length > 1 ? 's' : ''}&nbsp;| &nbsp;
         <i class="fas fa-share"></i>&nbsp;+Share| &nbsp;
-        <i class="fas fa-smile-wink"></i>&nbsp; Say Thanks| &nbsp;
+        {!isAlreadyLoved(company._id) && (
+          <span onClick={() => handleLove(company.slug)}>
+            <i class="far fa-heart"></i>&nbsp;{love1} Love| &nbsp;
+          </span>
+        )}
+        {isAlreadyLoved(company._id) && (
+          <span style={{ color: '#BD3734' }}>
+            <i class="fas fa-heart"></i>&nbsp;{love1} Loved| &nbsp;
+          </span>
+        )}
         <i class="fas fa-eye"></i>&nbsp; {company.view} View
         {company.view > 1 ? 's' : ''}| &nbsp;
         <Link to={`/companies/${company.slug}`}>
           <i class="fas fa-hand-point-right"></i>See
         </Link>
       </div>
+
       <br />
+      <hr />
     </div>
   );
 };

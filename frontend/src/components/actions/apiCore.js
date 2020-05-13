@@ -54,3 +54,13 @@ export const createRequest = (data) => {
     })
     .catch((err) => console.log(err));
 };
+
+export const paginationCompany = (page) => {
+  return fetch(`${API}/admin/companies/?page=${page}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};

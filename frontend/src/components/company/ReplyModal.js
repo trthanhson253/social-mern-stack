@@ -60,14 +60,13 @@ const ReplyModal = ({
                   type="text"
                   onChange={handleChange('name')}
                   value={name}
-                  placeholder="Xưng tên trước khi viết reply "
+                  placeholder="Please tell us your name before writing reply "
                 />
               </div>
             </div>
             <div className="field">
               <label className="label">
-                Viết Reply lại{' '}
-                <span className="has-text-danger">(Bắt buộc)</span>
+                Reply back <span className="has-text-danger">(Needed)</span>
               </label>
               <div className="control">
                 <textarea
@@ -80,9 +79,7 @@ const ReplyModal = ({
                   defaultValue={''}
                 />
               </div>
-              <p className="help is-danger is-hidden">
-                Nội dung tối thiếu 10 kí tự
-              </p>
+              <p className="help is-danger is-hidden">At least 10 characters</p>
             </div>
           </DialogContent>
           <DialogActions>
@@ -90,10 +87,10 @@ const ReplyModal = ({
               className="button button-review-submit is-success"
               onClick={clickSubmit}
             >
-              Reply Lại
+              Reply Back
             </button>
             <button onClick={handleCloseReply} className="button button-close">
-              Hủy
+              Cancel
             </button>
           </DialogActions>
         </Dialog>

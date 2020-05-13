@@ -20,8 +20,7 @@ const commentSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-
-      max: 1000,
+      max: 20000,
       required: true,
     },
     company: [{ type: ObjectId, ref: 'Company', required: true }],

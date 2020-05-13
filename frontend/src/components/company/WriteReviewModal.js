@@ -58,17 +58,16 @@ const WriteReviewModal = ({
       >
         <DialogTitle id="form-dialog-title">
           <p className="modal-card-title">
-            Viết Review cho công ty {company1.name}
+            Write review for <b>{company1.name}</b>
           </p>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
+            Feel free to share with us what you think about this company.
           </DialogContentText>
 
           <div className="field">
-            <label className="label">Tên họ</label>
+            <label className="label">Your name</label>
             <div className="control">
               <input
                 className="input"
@@ -76,12 +75,12 @@ const WriteReviewModal = ({
                 onChange={handleChange('name')}
                 value={name}
                 type="text"
-                placeholder="Muốn xưng tên thật thì xưng không thì thui"
+                placeholder="If you want to tell your name ..."
               />
             </div>
           </div>
           <div className="field">
-            <label className="label">Chức vụ</label>
+            <label className="label">Position</label>
             <div className="control">
               <input
                 className="input"
@@ -89,54 +88,50 @@ const WriteReviewModal = ({
                 value={position}
                 onChange={handleChange('position')}
                 type="text"
-                placeholder="Dev quèn / HR hay Manager"
+                placeholder="Fresher / Senior or Manager"
               />
             </div>
           </div>
           <div className="field">
             <label className="label">
-              Review Company <span className="has-text-danger">(Bắt buộc)</span>
+              Write something <span className="has-text-danger">(needed)</span>
             </label>
             <div className="control">
               <textarea
                 required
                 className="textarea"
-                name="content"
                 value={content}
+                placeholder="Write something amazing about this company..."
                 onChange={handleChange('content')}
-                placeholder="Bức xúc hay gì thì viết dài dài vô (Tối thiểu 10 kí tự). Nếu muốn xin review, cứ bấm nút [Nhận thông báo] nha!!"
-                defaultValue={''}
+                name="content"
               />
             </div>
             <p className="help is-danger is-hidden">
-              Nội dung tối thiếu 10 kí tự
+              At least 10 characters please
             </p>
           </div>
           <div className="field">
-            <label className="label">Cho điểm công ty</label>
+            <label className="label">Give this company a rate</label>
             <div className="control">
               <div className="select">
                 <select name="point" onChange={handleChange('point')}>
-                  <option value="1">
-                    1 điểm - Max sida, né gấp kẻo hối hận
-                  </option>
+                  <option value="1">1 point - WTF, avoid at no cost</option>
                   <option value="2">
-                    2 điểm - Hết thuốc chữa, đang tính đường chuồn
+                    2 points - No way, should leave as soon as possible
                   </option>
                   <option value="3" selected>
-                    3 điểm - Cũng tạm, để coi sao
+                    3 points - Average, but let time answer
                   </option>
-                  <option value="4">4 điểm - Cũng ngon, nên làm lâu dài</option>
+                  <option value="4">4 points - Good for your career</option>
                   <option value="5">
-                    5 điểm - Công ty tuyệt cmn vời, đuổi cũng méo đi
+                    5 points - Excellent, never leave here
                   </option>
                 </select>
               </div>
             </div>
           </div>
           <p className="m-t-5">
-            Người đăng chịu trách nhiệm về tính xác thực của nội dung chứ
-            <b>bên mình không có chịu</b>, okay?
+            Reviewers will be responsible for what they write, not us, okay?
           </p>
         </DialogContent>
         <DialogActions>

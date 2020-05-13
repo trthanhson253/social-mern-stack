@@ -47,7 +47,7 @@ const LikeModal = ({ handleClose, open, comment, handleReload }) => {
         <DialogContent>
           <div className="field">
             <label className="label">
-              Mời Xưng Tên Trước Khi Nhấn Nút Like
+              Please tell us your name before clicking like button
             </label>
             <div className="control">
               <input

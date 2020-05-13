@@ -4,9 +4,14 @@ import SigninModal from './SigninModal';
 import SendRequest from './SendRequest';
 import { isAuthenticated, signout } from '../actions/apiAuth';
 import './Home.css';
+import { getNewestRequest } from '../actions/apiRequest';
+import { getCountRequest } from '../admin/helpers';
+
 const Header = ({ history }) => {
   const [open, setOpen] = useState(false);
   const [openSendRequest, setOpenSendRequest] = useState(false);
+  // const [countRequest, setCountRequest] = useState([]);
+  const [error, setError] = useState(false);
 
   const handleClickOpenSendRequest = () => {
     setOpenSendRequest(true);
@@ -20,7 +25,28 @@ const Header = ({ history }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  // const loadNewestRequest = () => {
+  //   getNewestRequest().then((data) => {
+  //     if (data.error) {
+  //       setError(data.error);
+  //     } else {
+  //       // setCountRequest(data);
+  //       localStorage.setItem('countRequest', JSON.stringify(data.length));
+  //     }
+  //   });
+  // };
+  const [value, setValue] = useState(false);
 
+  const getCountRequest1 = () => {
+    getCountRequest();
+    console.log('GIA TRI CUA A1 LA');
+    setValue(true);
+  };
+
+  // useEffect(() => {
+  //   getCountRequest1();
+  //   console.log('GIA TRI CUA A2 LA ');
+  // }, [value]);
   return (
     <Fragment>
       <nav className="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
@@ -77,7 +103,6 @@ const Header = ({ history }) => {
                     <span className="badge badge-success">
                       <i className="fas fa-box-open"></i> Request Box
                     </span>
-                    <span className="badge-new">10</span>
                   </Link>
                 </li>
               </React.Fragment>

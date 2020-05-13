@@ -81,7 +81,7 @@ exports.read = (req, res) => {
       .populate('company', '_id name slug')
       .sort({ createdAt: -1 })
       .select(
-        '_id name position point content likes dislike reply violate createdAt updatedAt'
+        '_id name position point content likes dislike reply love violate createdAt updatedAt'
       )
       .exec((err, data) => {
         if (err) {
@@ -135,7 +135,7 @@ exports.listSearch = (req, res) => {
   const { search } = req.query;
   console.log(search);
   if (search) {
-    Company.find({ name: { $regex: search, $options: 'i' } })
+    Company.find({ name: { $regex: search, $options: 'i' }, status: 1 })
       .limit(10)
       .exec((err, data) => {
         if (err) {
@@ -169,11 +169,17 @@ exports.listBySearch = (req, res) => {
   let sortBy = req.body.sortBy ? req.body.sortBy : 'createdAt';
   let order = req.body.order ? req.body.order : 'desc';
   let filterByState = req.body.filterByState;
-  let state = filterByState ? { state: filterByState } : {};
-
+  let state = filterByState
+    ? { state: filterByState, status: 1 }
+    : { status: 1 };
+  console.log('SORT By', sortBy);
+  console.log('order', order);
+  console.log('limit', limit);
+  console.log('skip', skip);
   Company.find(state)
     .select('-photo')
     .sort([[sortBy, order]])
+    // .sort({ sortBy: order })
     .skip(skip)
     .limit(limit)
     .exec((err, data) => {
@@ -286,4 +292,51 @@ exports.listStatus = (req, res) => {
       }
       res.json(data);
     });
+};
+
+exports.paginationCompany = async (req, res) => {
+  // get current page from req.query or use default value of 1
+  const currentPage = req.query.page || 1;
+  // return 3 posts per page
+  const perPage = 6;
+  let totalItems;
+  let numberOfPages;
+
+  const company = await Company.find()
+    // countDocuments() gives you total count of posts
+    .countDocuments()
+    .then((count) => {
+      totalItems = count;
+      numberOfPages = Math.ceil(totalItems / perPage);
+      return Company.find()
+        .skip((currentPage - 1) * perPage)
+        .sort({ createdAt: -1 })
+        .limit(perPage)
+        .select('-photo');
+    })
+    .then((company) => {
+      res.status(200).json({ company, numberOfPages });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.love = (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+  if (slug) {
+    Company.findOneAndUpdate(
+      { slug },
+      {
+        $inc: {
+          love: 1,
+        },
+      }
+    ).exec((err, company) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Not Found',
+        });
+      }
+      res.json(company);
+    });
+  }
 };

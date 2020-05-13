@@ -62,6 +62,20 @@ export const like = (name, id) => {
     .catch((err) => console.log(err));
 };
 
+export const love = (slug) => {
+  return fetch(`${API}/company/love/${slug}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+
 export const dislike = (id) => {
   return fetch(`${API}/dislike/${id}`, {
     method: 'PUT',
@@ -118,6 +132,19 @@ export const listSearch = (params) => {
     })
     .catch((err) => console.log(err));
 };
+
+// export const listSearchCompanyAPI = (params) => {
+//   console.log('search params', params);
+//   let query = queryString.stringify(params);
+//   console.log('query params', query);
+//   return fetch(`${API}/company/search?search=${query}`, {
+//     method: 'GET',
+//   })
+//     .then((response) => {
+//       return response.json();
+//     })
+//     .catch((err) => console.log(err));
+// };
 
 export const createCompany = (company) => {
   return fetch(`${API}/admin/company/create`, {
@@ -253,6 +280,23 @@ export const isAlreadyDislike = (idComment) => {
   }
   if (localStorage.getItem('dislike-' + idComment)) {
     return JSON.parse(localStorage.getItem('dislike-' + idComment));
+  } else {
+    return false;
+  }
+};
+
+export const alreadyLoved = (data) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('love-' + data._id, JSON.stringify(data._id));
+  }
+};
+
+export const isAlreadyLoved = (idCompany) => {
+  if (typeof window == 'undefined') {
+    return false;
+  }
+  if (localStorage.getItem('love-' + idCompany)) {
+    return JSON.parse(localStorage.getItem('love-' + idCompany));
   } else {
     return false;
   }

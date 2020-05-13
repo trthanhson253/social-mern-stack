@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { getNewestComment, removeComment } from '../actions/apiComment';
 import './admin.css';
-import Auto from './Auto';
 
 const CommentList = (props) => {
   const [comment, setComment] = useState([]);
@@ -40,13 +39,6 @@ const CommentList = (props) => {
   }, []);
   return (
     <div>
-      <div className="App">
-        <h1>Custom AutoComplete React</h1>
-        <div className="logo"></div>
-        <div className="auto-container">
-          <Auto />
-        </div>
-      </div>
       <div className="container company-list">
         <div className="table-wrapper">
           <div className="table-title">
@@ -66,18 +58,7 @@ const CommentList = (props) => {
           </div>
           <div className="table-filter">
             <div className="row">
-              <div className="col-sm-3">
-                <div className="show-entries">
-                  <span>Show</span>
-                  <select className="form-control">
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                  </select>
-                  <span>entries</span>
-                </div>
-              </div>
+              <div className="col-sm-3"></div>
               <div className="col-sm-9">
                 <button type="button" className="btn btn-primary">
                   <i className="fa fa-search" />
@@ -87,7 +68,7 @@ const CommentList = (props) => {
                   <input type="text" className="form-control" />
                 </div>
                 <div className="filter-group">
-                  <label>Location</label>
+                  <label>Company</label>
                   <select className="form-control">
                     <option>All</option>
                     <option>Berlin</option>
@@ -97,17 +78,6 @@ const CommentList = (props) => {
                     <option>Paris</option>
                   </select>
                 </div>
-                <div className="filter-group">
-                  <label>Status</label>
-                  <select className="form-control">
-                    <option>Any</option>
-                    <option>Active</option>
-                    <option>Inactive</option>
-                  </select>
-                </div>
-                <span className="filter-icon">
-                  <i className="fa fa-filter" />
-                </span>
               </div>
             </div>
           </div>

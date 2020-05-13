@@ -50,14 +50,12 @@ const ViolateModal = ({
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          <p className="modal-card-title">
-            Báo cáo bình luận có nội dung vi phạm
-          </p>
+          <p className="modal-card-title">Report this comment</p>
         </DialogTitle>
         <DialogContent>
           <div className="field">
             <label className="label">
-              Lý do vi phạm <span className="has-text-danger"></span>
+              Tell us the reason <span className="has-text-danger"></span>
             </label>
             <div className="control">
               <textarea
@@ -66,7 +64,7 @@ const ViolateModal = ({
                 name="content"
                 value={content}
                 onChange={handleChange('content')}
-                placeholder="Lý do bạn nghĩ bình luận này có nội dung vi phạm(Thích thì ghi ko thì thui) "
+                placeholder="Reason you think this comment violate our policy (write if you want and ok if you don't want) "
                 defaultValue={''}
               />
             </div>
@@ -77,10 +75,10 @@ const ViolateModal = ({
             className="button button-review-submit is-success"
             onClick={clickSubmit}
           >
-            Báo cáo
+            Report
           </button>
           <button onClick={handleCloseViolate} className="button button-close">
-            Hủy
+            Cancel
           </button>
         </DialogActions>
       </Dialog>

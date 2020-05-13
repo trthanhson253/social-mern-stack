@@ -68,3 +68,14 @@ exports.toggle = (req, res) => {
     res.json(data);
   });
 };
+
+exports.newestRequestCount = (req, res) => {
+  Request.find({ status: 0 }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: errorHandler(err),
+      });
+    }
+    res.json(data);
+  });
+};

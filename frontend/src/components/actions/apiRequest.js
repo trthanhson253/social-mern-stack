@@ -11,7 +11,6 @@ export const getRequest = () => {
 };
 
 export const getToggleStatus = (idRequest, status1) => {
-  console.log('status2 : ' + status1);
   return fetch(`${API}/admin/request/${idRequest}/${status1}`, {
     method: 'GET',
   })
@@ -24,6 +23,16 @@ export const getToggleStatus = (idRequest, status1) => {
 export const removeRequest1 = (idRequest) => {
   return fetch(`${API}/admin/request/delete/${idRequest}`, {
     method: 'DELETE',
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getNewestRequest = () => {
+  return fetch(`${API}/admin/request/newestRequestCount`, {
+    method: 'GET',
   })
     .then((response) => {
       return response.json();

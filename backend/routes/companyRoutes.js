@@ -12,6 +12,8 @@ const {
   editSingleCompany,
   listStatus,
   view,
+  paginationCompany,
+  love,
 } = require('../controllers/companyController');
 const { runValidation } = require('../validators');
 const { companyCreateValidator } = require('../validators/companyValidator');
@@ -24,12 +26,14 @@ router.get('/company/search', listSearch);
 
 router.get('/company/photo/:slug', photo);
 router.post('/company/by/search', listBySearch);
-
+router.get('/company/love/:slug', love);
 // ADMIN
 router.post('/admin/company/create', create);
 router.delete('/admin/company/delete/:slug', remove);
 router.get('/admin/company/:slug', listSingleCompany);
 router.put('/admin/company/:slug', editSingleCompany);
 router.get('/admin/company/status/:status', listStatus);
+
+router.get('/admin/companies', paginationCompany);
 
 module.exports = router;

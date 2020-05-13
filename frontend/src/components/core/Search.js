@@ -1,56 +1,50 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
+import { useRef } from 'react';
 import { API } from '../../config';
 import { Link } from 'react-router-dom';
-import { listSearch } from '../actions/apiCompany';
-const Search = () => {
-  // const [result, setResult] = useState([]);
-  // const [keyword, setKeyword] = useState({
-  //   name:'',
-  //   searched:false
-  // });
-
-  // const searchCompany = (keyword) => {
-  //   return fetch(`${API}/search`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ keyword: keyword }),
-  //   })
-  //     .then((result) => {
-  //       return result.json();
-  //     })
-  //     .then((data) => setResult(data))
-  //     .catch((err) => console.log(err));
-  // };
-  // console.log('Result:' + JSON.stringify(result));
-  // useEffect(() => {
-  //   searchCompany(keyword);
-  // }, [keyword]);
-
-  // const handleSearch = (e) => {
-  //   setKeyword(e.target.value);
-  // };
-
-  const [result, setResult] = useState([]);
-  const [keyword, setKeyword] = useState({
-    search: '',
-    searched: false,
-  });
-  const { search, searched } = keyword;
-  const searchCompany = () => {
-    listSearch({ search }).then((data) => {
-      setResult(data);
-      // setKeyword({ search: '', searched: false });
-    });
-  };
-  console.log('Result:' + JSON.stringify(result));
-  useEffect(() => {
-    searchCompany(keyword);
-  }, [keyword]);
+const Search = ({ onSubmit, result, loading }) => {
+  const [search, setSearch] = useState('');
+  const typingTimeoutRef = useRef(null);
 
   const handleSearch = (e) => {
-    setKeyword({ search: e.target.value, searched: true });
+    const value = e.target.value;
+    setSearch(value);
+    if (!onSubmit) return;
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      const formValues = {
+        search: value,
+      };
+      onSubmit(formValues);
+    }, 500);
+  };
+
+  console.log('result.length', result.length);
+  console.log('Dữ liêu là:', result);
+  const renderSuggestions = () => {
+    if (result.length === 0) {
+      return null;
+    } else {
+      return (
+        <div id="myInputautocomplete-list" className="autocomplete-items">
+          {result.map((p, i) => (
+            <Link to={`/companies/${p.slug}`}>
+              <div key={i}>
+                <img
+                  src={`${API}/company/photo/${p.slug}`}
+                  alt={p.name}
+                  style={{ height: '30px', width: '40px' }}
+                />
+                &nbsp;
+                <b style={{ color: '#00A2E8' }}>{p.name}</b>
+              </div>
+            </Link>
+          ))}
+        </div>
+      );
+    }
   };
 
   return (
@@ -70,25 +64,7 @@ const Search = () => {
             autoComplete="off"
             onChange={handleSearch}
           />
-          {searched &&
-            result.map((p, i) => (
-              <Link to={`/companies/${p.slug}`}>
-                <div
-                  id="myInputautocomplete-list"
-                  className="autocomplete-items"
-                >
-                  <div key={i}>
-                    <img
-                      src={`${API}/company/photo/${p.slug}`}
-                      alt={p.name}
-                      style={{ height: '25px', width: '50px' }}
-                    />
-                    &nbsp;
-                    {p.name}
-                  </div>
-                </div>
-              </Link>
-            ))}
+          {renderSuggestions()}
         </div>
       </div>
     </Fragment>

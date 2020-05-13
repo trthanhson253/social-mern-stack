@@ -4,6 +4,9 @@ import {
   getCurrentCompany,
   getAverageRating,
   getCurrentView,
+  love,
+  alreadyLoved,
+  isAlreadyLoved,
 } from '../actions/apiCompany';
 import WriteReviewModal from './WriteReviewModal';
 import CommentCard from './CommentCard';
@@ -69,6 +72,17 @@ const Company = (props) => {
 
   const toggleModalState = () => {
     setModalState(!modalState);
+  };
+
+  const handleLove = (slug) => {
+    love(slug).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        alreadyLoved(data);
+        loadCurrentCompany(slug);
+      }
+    });
   };
 
   useEffect(() => {
@@ -268,7 +282,19 @@ const Company = (props) => {
             <i class="fas fa-share"></i>&nbsp; Share&nbsp; | &nbsp;
             <i class="fas fa-eye"></i>&nbsp; {company.view} View
             {company.view > 1 ? 's' : ''} &nbsp; | &nbsp;
-            <i class="fas fa-smile-wink"></i>&nbsp; Say Thanks
+            {!isAlreadyLoved(company._id) && (
+              <span
+                onClick={() => handleLove(company.slug)}
+                style={{ cursor: 'pointer' }}
+              >
+                <i class="far fa-heart"></i>&nbsp;{company.love} Love
+              </span>
+            )}
+            {isAlreadyLoved(company._id) && (
+              <span style={{ color: '#BD3734' }}>
+                <i class="fas fa-heart"></i>&nbsp;{company.love} Loved
+              </span>
+            )}
           </div>
         </section>
 
