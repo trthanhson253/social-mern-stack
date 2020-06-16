@@ -15,15 +15,16 @@ export const getFilteredCompany = (
   limit,
   sortBy,
   order,
-  filterByState
+  filters = {}
 ) => {
   const data = {
     limit,
     skip,
     sortBy,
     order,
-    filterByState,
+    filters,
   };
+  console.log('filters', data);
   return fetch(`${API}/company/by/search`, {
     method: 'POST',
     headers: {

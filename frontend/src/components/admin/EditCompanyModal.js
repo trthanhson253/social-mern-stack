@@ -10,7 +10,7 @@ const EditCompanyModal = ({
   openEdit,
   handleCloseEdit,
   companyToEdit,
-  loadCompany
+  loadCompany,
 }) => {
   const [values, setValues] = useState({
     name: '',
@@ -22,7 +22,7 @@ const EditCompanyModal = ({
     error: '',
     formData: '',
   });
-  console.log("companyToEdit"+companyToEdit.name);
+  // console.log("companyToEdit"+companyToEdit.name);
   // console.log("openEdit"+openEdit);
   // const initCompany = (slug) => {
   //   singleCompany(slug).then((data) => {
@@ -44,7 +44,7 @@ const EditCompanyModal = ({
     event.preventDefault();
     setValues({ ...values, error: '' });
 
-    editSingleCompany(companyToEdit.slug,formData).then((data) => {
+    editSingleCompany(companyToEdit.slug, formData).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
@@ -63,16 +63,17 @@ const EditCompanyModal = ({
     });
   };
 
- useEffect(() => {
-       setValues({name:companyToEdit.name,
-       type: companyToEdit.type,
-    city: companyToEdit.city,
-    state: companyToEdit.state,
-    photo: companyToEdit.photo,
-    status: companyToEdit.status,
-    formData:new FormData()
-       });
-    }, [openEdit]);
+  useEffect(() => {
+    setValues({
+      name: companyToEdit.name,
+      type: companyToEdit.type,
+      city: companyToEdit.city,
+      state: companyToEdit.state,
+      photo: companyToEdit.photo,
+      status: companyToEdit.status,
+      formData: new FormData(),
+    });
+  }, [openEdit]);
   return (
     <Fragment>
       <Dialog
@@ -129,13 +130,13 @@ const EditCompanyModal = ({
                       <div className="form-group">
                         <label>Photo</label>
                         <br />
-                         <img
-                    src={`${API}/company/photo/${companyToEdit.slug}`}
-                    className="avatar"
-                    alt={companyToEdit.name}
-                    style={{ maxHeight: '100px', maxWidth: '100px' }}
-                  />
-                  <br />
+                        <img
+                          src={`${API}/company/photo/${companyToEdit.slug}`}
+                          className="avatar"
+                          alt={companyToEdit.name}
+                          style={{ maxHeight: '100px', maxWidth: '100px' }}
+                        />
+                        <br />
                         <input
                           onChange={handleChange('photo')}
                           type="file"

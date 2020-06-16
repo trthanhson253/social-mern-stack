@@ -21,8 +21,8 @@ const Search = ({ onSubmit, result, loading }) => {
     }, 500);
   };
 
-  console.log('result.length', result.length);
-  console.log('Dữ liêu là:', result);
+  // console.log('result.length', result.length);
+  // console.log('Dữ liêu là:', result);
   const renderSuggestions = () => {
     if (result.length === 0) {
       return null;

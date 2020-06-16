@@ -13,7 +13,7 @@ export const signin = (data) => {
       return response.json();
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 };
 
@@ -32,7 +32,7 @@ export const signout = (next) => {
       method: 'GET',
     })
       .then((response) => {
-        console.log('signout', response);
+        // console.log('signout', response);
       })
       .catch((err) => console.log(err));
   }

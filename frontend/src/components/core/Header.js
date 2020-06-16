@@ -1,17 +1,16 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import SigninModal from './SigninModal';
 import SendRequest from './SendRequest';
 import { isAuthenticated, signout } from '../actions/apiAuth';
 import './Home.css';
-import { getNewestRequest } from '../actions/apiRequest';
 import { getCountRequest } from '../admin/helpers';
 
 const Header = ({ history }) => {
   const [open, setOpen] = useState(false);
   const [openSendRequest, setOpenSendRequest] = useState(false);
   // const [countRequest, setCountRequest] = useState([]);
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
 
   const handleClickOpenSendRequest = () => {
     setOpenSendRequest(true);
@@ -35,13 +34,13 @@ const Header = ({ history }) => {
   //     }
   //   });
   // };
-  const [value, setValue] = useState(false);
+  // const [value, setValue] = useState(false);
 
-  const getCountRequest1 = () => {
-    getCountRequest();
-    console.log('GIA TRI CUA A1 LA');
-    setValue(true);
-  };
+  // const getCountRequest1 = () => {
+  //   getCountRequest();
+  //   // console.log('GIA TRI CUA A1 LA');
+  //   setValue(true);
+  // };
 
   // useEffect(() => {
   //   getCountRequest1();
@@ -77,13 +76,6 @@ const Header = ({ history }) => {
           <ul className="navbar-nav mr-auto">
             {isAuthenticated() && isAuthenticated().user.role === 1 && (
               <React.Fragment>
-                <li className="nav-item active">
-                  <a className="nav-link" href="#">
-                    <span className="badge badge-danger">
-                      <i className="fa fa-home" /> Home
-                    </span>
-                  </a>
-                </li>
                 <li className="nav-item active">
                   <Link to="/admin/company" className="nav-link">
                     <span className="badge badge-warning">

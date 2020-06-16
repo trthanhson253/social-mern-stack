@@ -7,6 +7,8 @@ import Search from './Search';
 import NewestCommentCard from './NewestCommentCard';
 import { STATES } from '../../config';
 import { listSearch } from '../actions/apiCompany';
+import SelectState from './SelectState';
+import SelectType from './SelectType';
 
 const Home = () => {
   const [newestCompany, setNewestCompany] = useState([]);
@@ -23,6 +25,9 @@ const Home = () => {
   const [isTop, setIsTop] = useState(false);
   const [isNewest, setIsNewest] = useState(false);
   const [isWorst, setIsWorst] = useState(false);
+  const [myFilters, setMyFilters] = useState({
+    filters: { state: [], type: [] },
+  });
 
   let sortBy,
     order = '';
@@ -35,6 +40,7 @@ const Home = () => {
   };
 
   const loadNewestCompany = () => {
+    // console.log('newFilters', newFilters);
     getFilteredCompany(skip, limit).then((data) => {
       if (data.error) {
         setError(data.error);
@@ -50,13 +56,27 @@ const Home = () => {
     });
   };
 
+  const loadFilterCompany = (newFilters) => {
+    // console.log('newFilters', newFilters);
+    getFilteredCompany(skip, limit, sortBy, order, newFilters).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setNewestCompany(data.data);
+        setLoading(true);
+        setSize(data.size);
+        setSkip(0);
+      }
+    });
+  };
+
   const loadTopCompany = () => {
     getFilteredCompany(skip, limit, (sortBy = 'avgRating'), order).then(
       (data) => {
         if (data.error) {
           setError(data.error);
         } else {
-          console.log('TOP COMPANIES', data.data);
+          // console.log('TOP COMPANIES', data.data);
           setNewestCompany(data.data);
           setLoading(true);
           setSize(data.size);
@@ -212,7 +232,7 @@ const Home = () => {
         if (data.error) {
           setError(data.error);
         } else {
-          console.log('FILTER BY STATE', data.data);
+          // console.log('FILTER BY STATE', data.data);
           setNewestCompany(data.data);
           setLoading(true);
           setSize(data.size);
@@ -222,7 +242,7 @@ const Home = () => {
     );
   };
   const handleFiltersChange = (newFilters) => {
-    console.log(newFilters);
+    // console.log(newFilters);
     setKeyword(newFilters);
   };
   const searchCompany = (keyword) => {
@@ -235,6 +255,15 @@ const Home = () => {
     });
   };
 
+  const handleFilters = (filters, filterBy) => {
+    const newFilters = { ...myFilters };
+    newFilters.filters[filterBy] = filters;
+
+    loadFilterCompany(myFilters.filters);
+    setMyFilters(newFilters);
+    // console.log('myFilters.filters', myFilters.filters);
+  };
+
   useEffect(() => {
     if (keyword !== null && keyword !== '') {
       searchCompany(keyword);
@@ -245,12 +274,12 @@ const Home = () => {
   }, [keyword]);
 
   useEffect(() => {
-    loadNewestCompany();
+    loadNewestCompany(myFilters.filters);
     loadNewestComment();
   }, []);
-  useEffect(() => {
-    loadFilterByState();
-  }, [filterByState]);
+  // useEffect(() => {
+  //   loadFilterByState();
+  // }, [filterByState]);
 
   return (
     <div>
@@ -322,25 +351,14 @@ const Home = () => {
                     <i class="fas fa-filter" />
                   </span>
                   <b>Sort </b>
-                  <select
-                    style={{ width: '100px' }}
-                    onChange={(e) => handleStateChange(e.target.value)}
-                  >
-                    <option value="all">-By State-</option>
-                    {states.map((p, i) => (
-                      <option value={p.abbreviation} key={i}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
+                  <SelectState
+                    states={states}
+                    handleFilters={(filters) => handleFilters(filters, 'state')}
+                  />
                   &nbsp;
-                  <select style={{ width: '80px' }}>
-                    <option>-By Type-</option>
-
-                    <option value="0">Product</option>
-                    <option value="1">Service</option>
-                    <option value="2">Consultancy</option>
-                  </select>
+                  <SelectType
+                    handleFilters={(filters) => handleFilters(filters, 'type')}
+                  />
                 </div>
               </ul>
             </div>
@@ -370,7 +388,7 @@ const Home = () => {
                 padding: '6px',
               }}
             >
-              <i class="fas fa-comments"></i> &#123; Latest Review &#125;
+              <i class="fas fa-comments"></i> &#123; Latest Reviews &#125;
             </h1>
             {newestComment.map((comment, i) => (
               <div key={i}>

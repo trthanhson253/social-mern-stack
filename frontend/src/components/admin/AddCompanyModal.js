@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { isAuthenticated } from '../actions/apiAuth';
@@ -17,8 +17,8 @@ const AddCompanyModal = ({ open, loadCompany, handleClose }) => {
     formData: new FormData(),
   });
 
-  const { user, token } = isAuthenticated();
-  const { name, type, city, state, photo, status, error, formData } = values;
+  // const { user, token } = isAuthenticated();
+  const { name, type, city, state, status, formData } = values;
 
   const handleChange = (name) => (event) => {
     const value = name === 'photo' ? event.target.files[0] : event.target.value;

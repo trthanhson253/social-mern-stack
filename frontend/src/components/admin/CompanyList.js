@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import './admin.css';
-import { getFilteredCompany, paginationCompany } from '../actions/apiCore';
+import { paginationCompany } from '../actions/apiCore';
 import {
   removeCompany,
   getHandleStatusAPI,
@@ -8,7 +8,7 @@ import {
 } from '../actions/apiCompany';
 import { API } from '../../config';
 import AddCompanyModal from './AddCompanyModal';
-import { Link } from 'react-router-dom';
+
 import EditCompanyModal from './EditCompanyModal';
 import CompanyStatus from './CompanyStatus';
 import moment from 'moment';
@@ -56,7 +56,7 @@ const CompanyList = () => {
   const deleteCompany = (slug) => {
     removeCompany(slug).then((data) => {
       if (data.error) {
-        console.log(data.error);
+        // console.log(data.error);
       } else {
         loadCompany();
       }
@@ -86,7 +86,7 @@ const CompanyList = () => {
   const loadCompany = (page) => {
     paginationCompany(page).then((data) => {
       if (data.error) {
-        console.log(data.error);
+        // console.log(data.error);
       } else {
         setCompany(data.company);
         setNumberOfPage(data.numberOfPages);

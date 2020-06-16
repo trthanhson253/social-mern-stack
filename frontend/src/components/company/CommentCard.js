@@ -17,7 +17,6 @@ const CommentCard = ({ comment, handleReload }) => {
   const [openViolate, setOpenViolate] = React.useState(false);
   const [likeCollapse, setLikeCollapse] = React.useState(false);
   const [replyCollapse, setReplyCollapse] = React.useState(false);
-  const [comment1, setComment1] = React.useState([]);
 
   const handleCloseViolate = () => {
     setOpenViolate(false);
@@ -25,9 +24,7 @@ const CommentCard = ({ comment, handleReload }) => {
   const handleClickOpenViolate = () => {
     setOpenViolate(true);
   };
-  const handleReloadViolate = () => {
-    handleReload();
-  };
+
   // -------------------------
   const handleCloseReply = () => {
     setOpenReply(false);
@@ -35,9 +32,7 @@ const CommentCard = ({ comment, handleReload }) => {
   const handleClickOpenReply = () => {
     setOpenReply(true);
   };
-  const handleReloadReply = () => {
-    handleReload();
-  };
+
   // ----------------------
   const handleClose = () => {
     setOpen(false);
@@ -52,7 +47,7 @@ const CommentCard = ({ comment, handleReload }) => {
   const clickDislike = () => {
     dislike(id).then((data) => {
       if (data.error) {
-        console.log('Error');
+        // console.log('Error');
       } else {
         alreadyDislike(data);
         handleReload1();
@@ -121,7 +116,7 @@ const CommentCard = ({ comment, handleReload }) => {
               &nbsp;&nbsp;&nbsp;
             </span>
           )}
-          {comment.violate.length != 0 && (
+          {comment.violate.length !== 0 && (
             <span style={{ color: '#FF5678' }}>
               {' '}
               <i class="fas fa-thumbtack"></i>&nbsp; Reported violate by{' '}

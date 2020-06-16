@@ -1,18 +1,18 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getNewestComment, removeComment } from '../actions/apiComment';
 import './admin.css';
 
-const CommentList = (props) => {
+const CommentList = () => {
   const [comment, setComment] = useState([]);
   const [error, setError] = useState(false);
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // const [open, setOpen] = useState(false);
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
 
   const loadNewestComment = () => {
     getNewestComment().then((data) => {
@@ -47,12 +47,6 @@ const CommentList = (props) => {
                 <h2>
                   <i class="fas fa-building"></i> List of <b>Comments</b>
                 </h2>
-              </div>
-              <div className="col-sm-8">
-                <a href="#" className="btn btn-info">
-                  <i class="fas fa-plus-circle"></i>{' '}
-                  <span>Add New Company</span>
-                </a>
               </div>
             </div>
           </div>

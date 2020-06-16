@@ -1,9 +1,9 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import { reply, alreadyReply } from '../actions/apiCompany';
+import { reply } from '../actions/apiCompany';
 
 const ReplyModal = ({
   handleCloseReply,

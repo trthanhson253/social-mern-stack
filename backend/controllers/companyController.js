@@ -168,14 +168,22 @@ exports.listBySearch = (req, res) => {
   let skip = parseInt(req.body.skip);
   let sortBy = req.body.sortBy ? req.body.sortBy : 'createdAt';
   let order = req.body.order ? req.body.order : 'desc';
-  let filterByState = req.body.filterByState;
-  let state = filterByState
-    ? { state: filterByState, status: 1 }
-    : { status: 1 };
-  console.log('SORT By', sortBy);
+  // let filterByState = req.body.filterByState;
+  // let state = filterByState
+  //   ? { state: filterByState, status: 1 }
+  //   : { status: 1 };
+
+  let findArgs = {};
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+  let state = findArgs ? findArgs : { status: 1 };
+  console.log('filters', req.body.filters);
+  console.log('STATE', state);
+  console.log('sortBy', sortBy);
   console.log('order', order);
-  console.log('limit', limit);
-  console.log('skip', skip);
   Company.find(state)
     .select('-photo')
     .sort([[sortBy, order]])

@@ -8,7 +8,6 @@ import CompanyList from './components/admin/CompanyList';
 import CommentList from './components/admin/CommentList';
 import RequestList from './components/admin/RequestList';
 import AdminRoute from './components/auth/AdminRoute';
-import ThuNghiem from './components/admin/ThuNghiem';
 
 const Routes = () => {
   return (
@@ -20,7 +19,6 @@ const Routes = () => {
         <AdminRoute path="/admin/company" exact component={CompanyList} />
         <AdminRoute path="/admin/comment" exact component={CommentList} />
         <AdminRoute path="/admin/request" exact component={RequestList} />
-        <Route path="/thunghiem" exact component={ThuNghiem} />
       </Switch>
       <Footer />
     </BrowserRouter>

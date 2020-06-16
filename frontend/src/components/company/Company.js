@@ -63,7 +63,7 @@ const Company = (props) => {
       if (data.error) {
         setError(data.error);
       } else {
-        console.log('View là:' + data);
+        // console.log('View là:' + data);
         setView(data);
       }
     });
